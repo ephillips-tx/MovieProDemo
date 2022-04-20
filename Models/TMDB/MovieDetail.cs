@@ -99,7 +99,7 @@ namespace MovieProDemo.Models.TMDB
         public string iso_3166_1 { get; set; }
         public string name { get; set; }
         public string key { get; set; }
-        public DateTime published_at { get; set; }
+        public string published_at { get; set; }
         public string site { get; set; }
         public int size { get; set; }
         public string type { get; set; }
@@ -123,7 +123,7 @@ namespace MovieProDemo.Models.TMDB
         public string certification { get; set; }
         public string iso_639_1 { get; set; }
         public string note { get; set; }
-        public DateTime release_date { get; set; }
+        public string release_date { get; set; }
         public int type { get; set; }
     }
 
