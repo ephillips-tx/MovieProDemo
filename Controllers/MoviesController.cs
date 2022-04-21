@@ -70,6 +70,8 @@ namespace MovieProDemo.Controllers
         public async Task<IActionResult> Library()
         {
             var movies = await _context.Movie.ToListAsync();
+            ViewData["Title"] = "Imported Movies";
+
             return View(movies);
         }
 

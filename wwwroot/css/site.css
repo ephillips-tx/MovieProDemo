@@ -1,18 +1,7 @@
-html {
-  font-size: 14px;
-}
+/* GOOGLE MATERIAL ICONS: based on guidelines */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+.material-icons.md-dark { color: rgba(255, 255, 255, 1) }
+.material-icons.md-dark.md-inactive { color: rgba(255, 255, 255, 0.3) }
+.material-icons.orange600 { color: #FB8C00; }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}

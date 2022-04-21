@@ -1,0 +1,27 @@
+﻿@using MovieProDemo.Models.Database
+@using MovieProDemo.Services.Interfaces
+@inject IImageService _imageService
+
+@model List<Movie>
+
+<div class="row">
+    <div class="col-12 text-center">
+        <h2 class="">MOVIE LIBRARY</h2>
+    </div>
+    <div class="col-12">
+        <hr />
+        <p>Found @Model.Count movie(s) in total</p>
+        <hr />
+    </div>
+    <div class="row">
+        @foreach (var movie in Model)
+        {
+            <div class="col-12 col-md-3">
+                <img src="@movie.PosterFile" class="img-fluid" alt="Movie Poster">
+                <p>@movie.Title.ToUpper()</p>
+                <button class="btn btn-lg btn-danger w-100">WATCH TRAILER</button>
+            </div>
+        }
+    </div>
+    
+</div>

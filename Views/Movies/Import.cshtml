@@ -1,0 +1,36 @@
+﻿@using MovieProDemo.Models.Database
+@model List<Movie>
+
+<div class="row">
+    <div class="col-8 text-center mx-auto">
+        <h2 class="mb-5">DISCOVER &amp; IMPORT MOVIES</h2>
+        <h6>Bloodhound's typeahead feature combined with the TMDB API allows us to both discover and import movies!</h6>
+    </div>
+    <form class="col-8 mx-auto mb-5" asp-action="Search" asp-controller="Movies">
+        <hr class="fw-bold text-warning" />
+        <div class="input-group">
+            <input type="text" name="SearchMovie" class="form-control" placeholder="ENTER MOVIE TITLE..." />
+            <button type="submit" class="btn btn-warning btn-sm">IMPORT</button>
+        </div>
+        <hr class="fw-bold text-warning" />
+    </form>
+    @foreach (var movie in Model)
+    {
+        <div class="row">
+            <div class="col-2">
+                <img src="@movie.Poster" class="img-fluid" alt="Movie Poster">
+            </div>
+            <div class="col-10">
+                <h6>@movie.Title (@movie.ReleaseDate.ToString().Substring(8))</h6>
+                <p><span class="material-symbols-outlined">star</span><span class="fw-bold">@movie.VoteAverage</span>/10</p>
+                <p>@movie.Overview</p>
+                <hr />
+                <div>
+                    <p class="w-25">Run Time: @movie.RunTime</p>
+                    <p class="w-25">MMPA: @movie.Rating</p> 
+                    <p class="w-25">Release: @movie.ReleaseDate</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
