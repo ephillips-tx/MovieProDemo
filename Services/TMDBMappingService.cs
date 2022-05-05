@@ -57,7 +57,7 @@ namespace MovieProDemo.Services
                     Overview = movie.overview,
                     RunTime = movie.runtime,
                     VoteAverage = movie.vote_average,
-                    ReleaseDate = DateTime.Parse(movie.release_date),
+                    ReleaseDate = DateTime.Parse(movie.release_date).ToUniversalTime(),
                     TrailerUrl = BuildTrailerPath(movie.videos),
                     Backdrop = await EncodeBackdropImageAsync(movie.backdrop_path),
                     BackdropType = BuildImageType(movie.backdrop_path),

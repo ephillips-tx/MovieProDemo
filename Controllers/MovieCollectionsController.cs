@@ -8,11 +8,11 @@ using MovieProDemo.Models.Database;
 
 namespace MovieProDemo.Controllers
 {
-    public class MovieCollections : Controller
+    public class MovieCollectionsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public MovieCollections(ApplicationDbContext context)
+        public MovieCollectionsController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -22,7 +22,7 @@ namespace MovieProDemo.Controllers
         {
             id ??= (await _context.Collection.FirstOrDefaultAsync(c => c.Name.ToUpper() == "ALL")).Id;
 
-            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Name", id);
+            ViewBag.CollectionId = new SelectList(_context.Collection, "Id", "Name", id);
 
             var allMovieIds = await _context.Movie.Select(m => m.Id).ToListAsync();
 
@@ -37,10 +37,10 @@ namespace MovieProDemo.Controllers
             var moviesInCollection = new List<Movie>();
             movieIdsInCollection.ForEach(movieId => moviesInCollection.Add(_context.Movie.Find(movieId)));
 
-            ViewData["IdsInCollection"] = new MultiSelectList(moviesInCollection, "Id", "Title");
+            ViewBag.IdsInCollection = new MultiSelectList(moviesInCollection, "Id", "Title");
 
             var moviesNotInCollection = await _context.Movie.AsNoTracking().Where(m => movieIdsNotInCollection.Contains(m.Id)).ToListAsync();
-            ViewData["IdsNotInCollection"] = new MultiSelectList(moviesNotInCollection, "Id", "Title");
+            ViewBag.IdsNotInCollection = new MultiSelectList(moviesNotInCollection, "Id", "Title");
 
             return View();
         }

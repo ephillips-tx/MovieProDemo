@@ -35,7 +35,10 @@ namespace MovieProDemo.Controllers
         // GET: Import
         public async Task<IActionResult> Import()
         {
-            var movies = await _context.Movie.ToListAsync();
+            var movies = await _context.Movie.OrderByDescending(m => m.Id)
+                                             .ToListAsync();
+            ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
+
             return View(movies);
         }
 

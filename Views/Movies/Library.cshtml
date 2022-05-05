@@ -17,7 +17,7 @@
         @foreach (var movie in Model)
         {
             <div class="col-12 col-md-3">
-                <img src="@movie.PosterFile" class="img-fluid" alt="Movie Poster">
+                <img src="@_imageService.DecodeImage(movie.Poster, movie.PosterType)" class="img-fluid" alt="Movie Poster">
                 <p>@movie.Title.ToUpper()</p>
                 <button class="btn btn-lg btn-danger w-100">WATCH TRAILER</button>
             </div>

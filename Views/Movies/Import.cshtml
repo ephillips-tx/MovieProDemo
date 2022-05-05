@@ -1,4 +1,8 @@
 ﻿@using MovieProDemo.Models.Database
+@using MovieProDemo.Services.Interfaces
+
+@inject IImageService _imageService
+
 @model List<Movie>
 
 <div class="row">
@@ -6,31 +10,94 @@
         <h2 class="mb-5">DISCOVER &amp; IMPORT MOVIES</h2>
         <h6>Bloodhound's typeahead feature combined with the TMDB API allows us to both discover and import movies!</h6>
     </div>
-    <form class="col-8 mx-auto mb-5" asp-action="Search" asp-controller="Movies">
+    <form class="col-8 mx-auto mb-5" id="importForm" asp-action="Import" asp-controller="Movies">
         <hr class="fw-bold text-warning" />
         <div class="input-group">
-            <input type="text" name="SearchMovie" class="form-control" placeholder="ENTER MOVIE TITLE..." />
-            <button type="submit" class="btn btn-warning btn-sm">IMPORT</button>
+            <input type="text" name="MovieImport" id="movieSearch" autocomplete="off" placeholder="ENTER MOVIE TITLE..." />
+            <button type="submit" class="btn btn-warning btn-sm" onclick="getMovieId()">IMPORT</button>
         </div>
         <hr class="fw-bold text-warning" />
+        
     </form>
     @foreach (var movie in Model)
     {
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-2">
-                <img src="@movie.Poster" class="img-fluid" alt="Movie Poster">
+                <img src="@_imageService.DecodeImage(movie.Poster, movie.PosterType)" class="img-fluid" alt="Movie Poster">
             </div>
             <div class="col-10">
-                <h6>@movie.Title (@movie.ReleaseDate.ToString().Substring(8))</h6>
-                <p><span class="material-symbols-outlined">star</span><span class="fw-bold">@movie.VoteAverage</span>/10</p>
+                <h6><a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieId" class="text-warning text-decoration-none">
+                    @movie.Title <small class="text-muted fst-italic fw-bold">(@movie.ReleaseDate.ToString("yyyy"))</small>
+                </a></h6>
+                <p><span class="material-symbols-outlined orange600">star</span><span class="fw-bold">@movie.VoteAverage</span>/10</p>
                 <p>@movie.Overview</p>
                 <hr />
-                <div>
-                    <p class="w-25">Run Time: @movie.RunTime</p>
-                    <p class="w-25">MMPA: @movie.Rating</p> 
-                    <p class="w-25">Release: @movie.ReleaseDate</p>
+                <div class="row">
+                    <div class="col-4"><small>Run Time: @movie.RunTime</small></div>
+                    <div class="col-4"><small>MMPA: @movie.Rating</small></div> 
+                    <div class="col-4"><small>Release: @movie.ReleaseDate.ToString("dddd, dd MMMM yyyy")</small></div>
                 </div>
             </div>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="~/js/typeahead.bundle.js"></script>
+
+    <script>
+        let apiKey = '@ViewData["api_key"]';
+
+        // Bloodhound with Remote
+        var movies_suggestions = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                 url: "https://api.themoviedb.org/3/search/movie?api_key="+apiKey+"&query=%QUERY",
+                 wildcard: "%QUERY",
+                 transform: function(response){
+                     return response.results;
+                 }
+            },
+            //identify: function(item){
+            //    return item.id;
+            //}
+        });
+
+        // init Typeahead
+        $('#movieSearch').typeahead(
+        {
+            // CONFIGURATION OPTIONS
+            highlight: true,
+            minLength: 2
+        },
+        {
+            // DATASET OPTIONS
+            name: "titles",
+            source: movies_suggestions, // suggestion engine (bloodhound) is passed as the source
+            display: function(item){
+                return item.title;
+            },
+            limit: 5,
+            templates: {
+                notFound: '<div>Not Found</div>',
+                pending: "<div>Loading...</div>",
+                suggestion: function(item){
+                    let title = item.title;
+                    return '<div>'+item.title+'<span id="'+title.toLowerCase()+'" hidden>'+item.id+'</div>';
+                }
+            }
+        });
+        
+        /* STYLING Twitter Typeahead */ 
+        $(".twitter-typeahead").addClass("form-control").css("padding",0);
+        $(".tt-hint,.tt-input").addClass("w-100");
+        $(".tt-hint").css("opacity",.6);
+
+        function getMovieId(){
+            let movieId = $(document.getElementById($("#movieSearch").val().toLowerCase())).text();
+            $("#importForm").attr("action", "/Movies/Import/"+movieId);
+        }
+    </script>
+
+}

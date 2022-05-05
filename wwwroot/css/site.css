@@ -1,5 +1,97 @@
+body {
+    background-color: #050326;
+    color: #e8e8e8;
+}
+
+body > .container {
+    min-height: 85vh;
+}
+
+header, footer {
+    background-color: #181818;
+    color: #8a8a8a;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-link:hover {
+    color: #c7c7c7;
+}
+
+.sticky-footer {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.btnArrow {
+    width: 100%;
+    background-color: #212529; /* bootstrap dark */
+    border: thick solid #ffc107; /* bootstrap warning */
+}
+
+.asterisk::before {
+    content: '*'
+}
+
+/* MODAL */
+.modal-content {
+    background-color: #050326;
+    font-weight: bold;
+}
+
+/* DROPDOWN MENU & ITEMS */
+.dropdown-menu {
+    background-color: #181818;
+}
+
+.dropdown-item {
+    color: #8a8a8a;
+}
+.dropdown-item:hover {
+    background-color: inherit;
+    color: #c7c7c7;
+}
+
+.clampOverview {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.clampTitle {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* TWITTER TYPEAHEAD / BLOODHOUND */
+.tt-dataset-titles {
+    padding: 15px;
+    background-color: #c7c7c7;
+    border-radius: 15px;
+}
+
+.tt-dataset-titles > div {
+    padding: 5px;
+    border-radius: 15px;
+}
+
+.tt-dataset-titles > div:hover {
+    background-color: #ffc107;
+}
+
+
 /* GOOGLE MATERIAL ICONS: based on guidelines */
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark {
+    color: rgba(0, 0, 0, 0.54);
+}
 .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
 .material-icons.md-dark { color: rgba(255, 255, 255, 1) }
 .material-icons.md-dark.md-inactive { color: rgba(255, 255, 255, 0.3) }
