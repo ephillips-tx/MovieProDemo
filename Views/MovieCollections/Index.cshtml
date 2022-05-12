@@ -6,10 +6,10 @@
 <div class="row">
     <div class="col-md-10 text-center mx-auto bg-white">
         <h2 class="text-dark my-3">MANAGE COLLECTIONS</h2>
-        <form asp-action="Index">
+        <form asp-controller="MovieCollections" asp-action="Index" id="collectionForm">
             <div class="row">
                 <div class="col-10">
-                    <select class="form-control" asp-items="@ViewBag.CollectionId" id="collectionList"></select>
+                    <select asp-for="Id" asp-items="@ViewBag.CollectionId" class="form-control" id="collectionList"></select>
                 </div>
                 <div class="col-2">
                     <button type="button" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#addCollectionModal">ADD</button>
@@ -21,22 +21,23 @@
             <div class="row gx-4">
                 <div class="col-5">
                     <h6 class="text-dark fw-bold">IN COLLECTION</h6>
-                    <select class="form-select w-100" size="8" id="inCollection" multiple>
+                    <select name="idsInCollection" class="form-select w-100" size="8" id="inCollection" multiple>
                         @foreach(var movie in ViewBag.IdsInCollection)
                         {
-                            <option class="fw-bold">@movie.Text</option>
+                            <option class="fw-bold" value="@movie.Value">@movie.Text</option>
                         }
                     </select>
                     <div class="my-1">
-                        <button type="button" class="btn btn-sm btn-outline-warning btnArrow w-25" id="orderUp"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
-                        <button type="button" class="btn btn-sm btn-outline-warning btnArrow w-25" id="orderDown"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                        @{ var classString0 = "btn btn-sm btn-outline-warning btnArrow w-25"; }
+                        <button type="button" class="@classString0" id="orderUp"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                        <button type="button" class="@classString0" id="orderDown"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
                     </div>
                 </div>
                 <div class="col-2 d-flex align-items-center justify-content-center p-0">
                     <div class="flex-column">
-                        @{ var classString = "btn btn-sm btn-outline-warning mb-1 btnArrow"; }
-                        <button type="button" class="@classString" id="add"><span class="material-symbols-outlined">keyboard_arrow_left</span></button>
-                        <button type="button" class="@classString" id="remove"><span class="material-symbols-outlined">keyboard_arrow_right</span></button>
+                        @{ var classString1 = "btn btn-sm btn-outline-warning mb-1 btnArrow"; }
+                        <button type="button" class="@classString1" id="add"><span class="material-symbols-outlined">keyboard_arrow_left</span></button>
+                        <button type="button" class="@classString1" id="remove"><span class="material-symbols-outlined">keyboard_arrow_right</span></button>
                     </div>
                 </div>
                 <div class="col-5">
@@ -44,7 +45,7 @@
                     <select class="form-select w-100" size="8" id="notInCollection" multiple>
                         @foreach(var movie in ViewBag.IdsNotInCollection)
                         {
-                            <option class="fw-bold">@movie.Text</option>
+                            <option class="fw-bold" value="@movie.Value">@movie.Text</option>
                         }
                     </select>
                 </div>
@@ -55,10 +56,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<div class="bg-light">
-    <div id="testDiv"></div>
 </div>
 
 @* MODAL *@
@@ -109,7 +106,6 @@
             }
 
             toggleSelected(obj) {
-                console.log("click handler fired");
                 if (obj.getAttribute("selected")) {
                     obj.removeAttribute("selected"); 
                     obj.setAttribute("class","fw-bold");
@@ -121,33 +117,43 @@
         }
 
         // Redirect after collection is changed
-        let collectionList = document.getElementById("collectionList");
+        const collectionList = document.getElementById("collectionList");
         collectionList.addEventListener("change", ()=>{
-            let url = window.location.href.split("?");
-            window.location.href = url[0]+"?Id="+collectionList.value;
+            let url = window.location.href.split("Index");
+            window.location.href = url[0]+"Index?Id="+collectionList.value;
         });
 
-        let singleRemove = document.getElementById("remove");
-        let singleAdd = document.getElementById("add");
-        let inColl = document.getElementById("inCollection");
-        let notInColl = document.getElementById("notInCollection");
+        const remove = document.getElementById("remove");
+        const add = document.getElementById("add");
+        const inColl = document.getElementById("inCollection");
+        const notInColl = document.getElementById("notInCollection");
+        // ORDER functions
+        const moveUp = document.getElementById("orderUp");
+        const moveDown = document.getElementById("orderDown");
 
         // add event handlers to options
         addListener(inColl);
         addListener(notInColl);
 
-        // Add/Remove Movies from collection
         // pass "add" to add to collection OR "remove" to remove it from collection
-        singleAdd.addEventListener("click", ()=>{
+        add.addEventListener("click", ()=>{
             swap("add");
         });
 
-        singleRemove.addEventListener("click", ()=>{
+        remove.addEventListener("click", ()=>{
             swap("remove");
         });
 
+        moveUp.addEventListener("click", ()=>{
+            move("up");
+        });
+
+        moveDown.addEventListener("click", ()=>{
+            move("down");
+        });
+
         function swap(action) {
-            var collection, selected;
+            let collection, selected;
 
             (action == "add") ? collection = notInColl : collection = inColl;
 
@@ -171,12 +177,18 @@
             // count options in opposite list
             let count = list[0].length;
 
+            // INVESTIGATE: can I just use clone instead of breaking it down like this?
+            // 1. pass arr as argument when creating a new cOption
+            // 2. clone node
+            // 3. append clone
+
             for (let i = 0; i < arr.length; i++) {
                 // instantiate an object from cOption class
                 newOption = new cOption;
                 newOption.el.id = list[0].id+(i+count);
                 newOption.el.setAttribute("class","fw-bold");
                 newOption.el.textContent = arr[i].textContent;
+                newOption.el.value = arr[i].value;
                 // log id of option
                 toRemove.push(arr[i].id);
                 // append new option
@@ -206,5 +218,33 @@
                 list.options[i].id = list.id+i;
             }
         }
+
+        function handleMove(element, position) {
+            let clone = new cOption(element.cloneNode(true));
+            inColl.insertBefore(clone.el, inColl.children[position]);
+            element.remove();
+            castId(inColl);
+            return;
+        }
+
+        function move(action) {
+            let arrColl = Array.from(inColl);
+            let selected = arrColl.filter(option => option.hasAttribute("selected"));
+            if (selected.length > 1) return alert("You can only select 1 element when changing the order.");
+            let pos = parseInt(selected[0].id.slice(selected[0].id.length-1));
+            
+            if (action == "up" && pos == 0) return alert("This element is already at the top.");
+            if (action == "down" && pos == arrColl.length-1) return alert("This element is already at the bottom.");
+
+            // pass action to function that handles basic intended movement cases
+            (action == "up") ? handleMove(selected[0], pos-1) : handleMove(selected[0], pos+2);
+        }
+
+        document.getElementById("collectionForm").addEventListener("submit", ()=>{
+            var c = document.querySelector("#inCollection");
+            for (var i = 0; i < c.options.length; i++) {
+                c.options[i].selected = true;
+            }
+        });
     </script>
 }

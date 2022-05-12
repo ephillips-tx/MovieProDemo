@@ -10,14 +10,13 @@
         <h2 class="mb-5">DISCOVER &amp; IMPORT MOVIES</h2>
         <h6>Bloodhound's typeahead feature combined with the TMDB API allows us to both discover and import movies!</h6>
     </div>
-    <form class="col-8 mx-auto mb-5" id="importForm" asp-action="Import" asp-controller="Movies">
+    <form class="col-8 mx-auto mb-5" id="importForm" asp-controller="Movies" asp-action="Import">
         <hr class="fw-bold text-warning" />
         <div class="input-group">
             <input type="text" name="MovieImport" id="movieSearch" autocomplete="off" placeholder="ENTER MOVIE TITLE..." />
-            <button type="submit" class="btn btn-warning btn-sm" onclick="getMovieId()">IMPORT</button>
+            <button type="submit" class="btn btn-warning btn-sm" id="importBtn">IMPORT</button>
         </div>
         <hr class="fw-bold text-warning" />
-        
     </form>
     @foreach (var movie in Model)
     {
@@ -47,6 +46,8 @@
 
     <script>
         let apiKey = '@ViewData["api_key"]';
+
+        document.getElementById("importBtn").addEventListener("click", getMovieId);
 
         // Bloodhound with Remote
         var movies_suggestions = new Bloodhound({

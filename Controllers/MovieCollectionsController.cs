@@ -37,7 +37,7 @@ namespace MovieProDemo.Controllers
             var moviesInCollection = new List<Movie>();
             movieIdsInCollection.ForEach(movieId => moviesInCollection.Add(_context.Movie.Find(movieId)));
 
-            ViewBag.IdsInCollection = new MultiSelectList(moviesInCollection, "Id", "Title");
+            ViewBag.IdsInCollection = new MultiSelectList(moviesInCollection, "Id", "Title"); // Id is the primary key of Movie table
 
             var moviesNotInCollection = await _context.Movie.AsNoTracking().Where(m => movieIdsNotInCollection.Contains(m.Id)).ToListAsync();
             ViewBag.IdsNotInCollection = new MultiSelectList(moviesNotInCollection, "Id", "Title");
