@@ -3,10 +3,10 @@
 @inject IImageService _imageService
 
 @model List<Movie>
-
+@{ var count = 0; }
 <div class="row">
     <div class="col-12 text-center">
-        <h2 class="">MOVIE LIBRARY</h2>
+        <h2>MOVIE LIBRARY</h2>
     </div>
     <div class="col-12">
         <hr />
@@ -16,12 +16,51 @@
     <div class="row">
         @foreach (var movie in Model)
         {
-            <div class="col-12 col-md-3">
-                <img src="@_imageService.DecodeImage(movie.Poster, movie.PosterType)" class="img-fluid" alt="Movie Poster">
-                <p>@movie.Title.ToUpper()</p>
-                <button class="btn btn-lg btn-danger w-100">WATCH TRAILER</button>
+            var trailerId = "trailer"+count;
+            var idTarget = '#'+trailerId;
+            <div class="col-12 col-md-3 mb-3">
+                <div class="poster position-relative">
+                    <img src="@_imageService.DecodeImage(movie.Poster, movie.PosterType)" class="img-fluid" alt="Movie Poster">
+                    <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-rounded bg-warning text-dark position-absolute top-50 start-50 translate-middle">DETAILS</a>
+                </div>
+                <p class="fw-bold text-white clampTitle my-2">@movie.Title.ToUpper()</p>
+                <a class="btn btn-danger d-flex align-items-center fw-bolder justify-content-center py-3" data-bs-toggle="modal" data-bs-target="@idTarget">
+                    <span class="material-symbols-outlined">play_arrow</span>&nbsp;<span class="trailerBtn">WATCH TRAILER</span>
+                </a>
             </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="@trailerId" tabindex="-1" role="dialog" aria-labelledby="trailerlabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">@movie.Title</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body d-flex justify-content-center">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                @{
+                                    // isolate a piece of data to use as embed source
+                                    var key = movie.TrailerUrl.Split("=").Last();
+                                    var source = $"https://www.youtube.com/embed/{key}";
+                                }
+                                <!--original: width="560" height="315" trailer has 2 sizes based on viewport width-->
+                                <iframe class="modal-trailer" src="@source"
+                                        title="Youtube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            count++;
         }
     </div>
-    
 </div>
+

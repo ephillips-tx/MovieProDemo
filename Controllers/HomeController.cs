@@ -15,7 +15,7 @@ namespace MovieProDemo.Controllers
         private readonly IRemoteMovieService _tmdbMovieService;
 
         public HomeController(ILogger<HomeController> logger,
-                              ApplicationDbContext context, 
+                              ApplicationDbContext context,
                               IRemoteMovieService tmdbMovieService)
         {
             _logger = logger;

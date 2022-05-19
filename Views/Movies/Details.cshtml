@@ -3,108 +3,221 @@
 @inject IImageService _imageService
 @model Movie
 
-<div class="row">
-    <div class="col-sm-12 col-md-6">
-        <div class="row">
-            <img src="@_imageService.DecodeImage(Model.Poster, Model.PosterType)" class="w-100" alt="Movie Poster" />
-        </div>
-        <div class="row">
-            <button class="btn btn-lg btn-danger fw-bold" data-toggle="modal" data-target="#trailer">WATCH TRAILER</button>
-        </div>
-    </div>
-    <div class="col-sm-12 col-md-6">
-        <div class="row">
-            <div class="col h5">
-                <span class="fw-bolder mr-2">TITLE:</span> @Model.Title
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-            <div class="col h5">
-                    <span class="fw-bolder mr-2">RELEASED:</span> @Model.ReleaseDate.ToString("MMM dd, yyyy")
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-            <div class="col h5">
-                    <span class="fw-bolder mr-2">RATING:</span> @Model.Rating
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-            <div class="col h5">
-                    <span class="fw-bolder mr-2">REVIEWS:</span> @Model.VoteAverage / 10
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-            <div class="col h5">
-                    <span class="h5 fw-bolder">OVERVIEW:</span> @Model.VoteAverage / 10
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <span class="h5 ml-4">@Model.Overview</span>
-            </div>
-        </div>
-    </div>
-</div>
+@{
+    List<string> Writers = new List<string>();
+    List<string> Stars = new List<string>();
+}
 
-<div class="row">
-    <div class="col">
-        <span class="h5 fw-bolder">STARRING:</span>
-    </div>
-</div>
-
-@foreach (var actor in Model.Cast.Take(5))
-{
-    <div class="row">
-        <div class="col">
-            <div class="card mb-3">
-                <div class="row no-gutters">
-                    <div class="col-md-2">
-                        <img src="@actor.ImageUrl" class="img-fluid" style="width: 10rem" alt="Actor Image">
+<div class="row" style="max-width: 1200px">
+    <div class="col-sm-12 col-md-5">
+        <div>
+            <img src="@_imageService.DecodeImage(Model.Poster, Model.PosterType)" class="w-100" alt="Movie Poster" style="max-width: 400px" />
+            <div class="flip-box p-3">
+                <div class="flip-box-inner">
+                    <div class="flip-box-front">
+                        <button class="btn btn-lg btn-danger fw-bold" data-bs-toggle="modal" data-bs-target="#trailer">WATCH TRAILER</button>
                     </div>
-                    <div class="col-md-10">
-                        <div class="card-body">
-                            <h5 class="card-title"><a asp-action="Details" asp-controller="Actors" asp-route-id="@actor.CastId">Name: @actor.Name</a></h5>
-                            <p class="card-text">Character: @actor.Character</p>
-                        </div>
+                    <div class="flip-box-back">
+                        <button class="btn btn-lg btn-danger fw-bold" data-bs-toggle="modal" data-bs-target="#trailer"><span class="material-symbols-outlined">play_arrow</span></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-}
+    <div class="col-sm-12 col-md-7">
+        <hr />
+        <div class="row">
+            <div class="col-3 d-flex align-items-center">
+                <span class="material-symbols-outlined text-warning">star</span><span class="fw-bold" style="font-size: 1rem">@Model.VoteAverage</span><small>/10</small> 
+            </div>
+            <div class="col-9">
+                <span class="movieTitle fw-bolder">@Model.Title</span> 
+            </div>
+        </div>
+        <hr />
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="movieDetails">
+                    <button class="active" id="overviewLink">Overview</button>
+                    <button class="inactive" id="castLink">Cast</button>
+                    <button class="inactive" id="crewLink">Crew</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- CREW SECTION -->
+            <section class="col-12 hide" id="crewSect">
+                <div class="sectionTitle">Crew</div>
+                <hr class="mt-0" />
+                @foreach (var member in Model.Crew)
+                {
+                    if (member.Job == "Director")
+                    { 
+                        ViewData["DirectorName"] = member.Name; 
+                    } 
+                    if (member.Job == "Writer")
+                    {
+                        Writers.Add(member.Name);
+                    }
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <img src="@member.ImageUrl" class="img-fluid" style="width: 10rem" alt="Actor Image">
+                        </div>
+                        <div class="col-5">
+                            <small>@member.Name</small>
+                        </div>
+                        <div class="col-5">
+                            <small>@member.Job</small>
+                        </div>
+                    </div>
+                }
+            </section>
+            <!-- OVERVIEW SECTION -->
+            <section class="col-12" id="overviewSect">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="mb-4"><small>@Model.Overview</small></div>
+                        <div class="sectionTitle">STARRING</div>
+                        <hr class="mt-0" />
+                        @foreach (var actor in Model.Cast.Take(5))
+                        {
+                            <div class="row mb-3">
+                                <div class="col-2">
+                                    <img src="@actor.ImageUrl" class="img-fluid" style="width: 10rem" alt="Actor Image">
+                                </div>
+                                <div class="col-5">
+                                    <a asp-action="Details" asp-controller="Actors" asp-route-id="@actor.CastId" class="text-decoration-none"><small>@actor.Name</small></a>
+                                </div>
+                                <div class="col-5">
+                                    <small>@actor.Character</small>
+                                </div>
+                            </div>
+                            Stars.Add(actor.Name);
+                        }
+                    </div>
+                    <div class="col-3" id="sideSection">
+                        <div>
+                            <p class="sideHeader">Director:</p>
+                            <small>@ViewData["DirectorName"]</small>
+                        </div>
+                        <div>
+                            <p class="sideHeader">Writers:</p>
+                            @foreach(var name in Writers)
+                            {
+                                <small class="d-block">@name</small>
+                            }
+                        </div>
+                        <div>
+                            <p class="sideHeader">Stars:</p>
+                            @foreach(var name in Stars)
+                            {
+                                <small class="d-block">@name</small>
+                            }
+                        </div>
+                        <div>
+                            <p class="sideHeader">Release Date:</p>
+                            <small>@Model.ReleaseDate.ToString("MMM dd, yyyy")</small>
+                        </div>
+                        <div>
+                            <p class="sideHeader">Run Time:</p>
+                            <small>@Model.RunTime minutes</small>
+                        </div>
+                        <div>
+                            <p class="sideHeader">Rating:</p>
+                            <small>@Model.Rating</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- CAST SECTION -->
+            <section class="col-12 hide" id="castSect">
+                <div class="sectionTitle">Cast</div>
+                 <hr class="mt-0" />
+                @foreach (var actor in Model.Cast)
+                {
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <img src="@actor.ImageUrl" class="img-fluid" style="width: 10rem" alt="Actor Image">
+                        </div>
+                        <div class="col-5">
+                            <a asp-action="Details" asp-controller="Actors" asp-route-id="@actor.CastId" class="text-decoration-none"><small>@actor.Name</small></a>
+                        </div>
+                        <div class="col-5">
+                            <small>@actor.Character</small>
+                        </div>
+                    </div>
+                }
+            </section>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="trailer" tabindex="-1" role="dialog" aria-labelledby="trailerlabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">@Model.Title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title">@Model.Title</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body d-flex justify-content-center">
                 <div class="embed-responsive embed-responsive-16by9">
                     @{
                         // isolate a piece of data to use as embed source
                         var key = Model.TrailerUrl.Split("=").Last();
                         var source = $"https://www.youtube.com/embed/{key}";
                     }
-
-                    <iframe width="560" height="315" src="@source"
+                    <!--original: width="560" height="315"-->
+                    <iframe class="modal-trailer" src="@source"
                             title="Youtube video player" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; pincture-in-picture"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen></iframe>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
+@section Scripts {
+<script>
+    var overLink = document.getElementById("overviewLink"),
+        castLink = document.getElementById("castLink"),
+        crewLink = document.getElementById("crewLink");
+
+    overLink.addEventListener("click", ()=>{
+        document.getElementById("overviewSect").className = "col-12";
+        document.getElementById("castSect").className = "hide";
+        document.getElementById("crewSect").className = "hide";
+
+        overLink.className = "active";
+        castLink.className = "inactive";
+        crewLink.className = "inactive";
+    });
+
+    castLink.addEventListener("click", ()=>{
+        document.getElementById("overviewSect").className = "hide";
+        document.getElementById("castSect").className = "col-12";
+        document.getElementById("crewSect").className = "hide";
+
+        overLink.className = "inactive";
+        castLink.className = "active";
+        crewLink.className = "inactive";
+    });
+
+    crewLink.addEventListener("click", ()=>{
+        document.getElementById("overviewSect").className = "hide";
+        document.getElementById("castSect").className = "hide";
+        document.getElementById("crewSect").className = "col-12";
+
+        overLink.className = "inactive";
+        castLink.className = "inactive";
+        crewLink.className = "active";
+    });
+</script>
+}

@@ -1,13 +1,71 @@
 ﻿@using MovieProDemo.ViewModels
+@using MovieProDemo.Services.Interfaces
+@inject IImageService _imageService
 
 @model LandingPageVM
 
 @{
     ViewData["Title"] = "MoviePro";
-    var BSClasses = "btn btn-lg btn-warning fw-bold w-100";
+    var btnClass = "btn btn-lg btn-warning fw-bold w-100";
+    var colStyle = string.Empty;
 }
 
-<section class="px-4">
+<div class="row">
+    <div class="col-12">
+        <h4 class="mb-3">CUSTOM COLLECTIONS</h4>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="collections">
+                    @foreach (var collection in Model.CustomCollections)
+                    {
+                        if (collection.Name == "All")
+                        {
+                            colStyle = "active";
+                        }
+                        else
+                        {
+                            colStyle = "inactive";
+                        }
+                        <button class="@colStyle" id="">#@collection.Name</button>
+                    }
+                    <div class="text-end mb-1">
+                        <span class="material-symbols-outlined orange600">circle</span>
+                        <span class="material-symbols-outlined">circle</span>
+                        <span class="material-symbols-outlined">circle</span>
+                    </div>
+                    <div class="carousel-container">
+                        @foreach (var collection in Model.CustomCollections)
+                        {
+                            <div class="carousel">
+                                <button class="carousel-control ctrl-prev"><span class="material-symbols-outlined">arrow_left</span></button>
+                                <button class="carousel-control ctrl-next"><span class="material-symbols-outlined">arrow_right</span></button>
+                                <div class="carousel-track d-flex flex-nowrap">
+                                    @foreach(var movie in collection.MovieCollections)
+                                    {
+                                        <div class="card clean">
+                                            <img src="@_imageService.DecodeImage(movie.Movie.Poster, movie.Movie.PosterType)" class="card-img-top img-fluid" alt="Movie Poster">
+                                            <div class="card-body">
+                                                <h5 class="card-title clampTitle">@movie.Movie.Title</h5>
+                                                <p class="card-text clampOverview">@movie.Movie.Overview</p>
+                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.Movie.MovieId" class="">More Info</a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <hr />
+                        }
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*<section class="px-4">
     <div class="row">
         <span class="btn btn-lg btn-block btn-warning fw-bolder border-dark">UPCOMING</span>
     </div>
@@ -28,7 +86,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title clampTitle">@movie.title</h5>
                                                 <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@BSClasses">Details</a>
+                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
                                             </div>
                                         </div>
                                     </div>
@@ -63,7 +121,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title clampTitle">@movie.title</h5>
                                                 <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@BSClasses">Details</a>
+                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
                                             </div>
                                         </div>
                                     </div>
@@ -98,7 +156,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title clampTitle">@movie.title</h5>
                                                 <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@BSClasses">Details</a>
+                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
                                             </div>
                                         </div>
                                     </div>
@@ -133,7 +191,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title clampTitle">@movie.title</h5>
                                                 <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@BSClasses">Details</a>
+                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
                                             </div>
                                         </div>
                                     </div>
@@ -146,8 +204,38 @@
             </div>
         </div>
     </div>
-</section>
+</section>*@
 
+@section Scripts {
+<script>
+    //how to reference the correct button for an unknown # of carousels?
+    // step 1: number the carousels with a forEach and give id or data attribute
+    // step 2: select carousel by id and access its children to target buttons
+    // step 3: set up listeners & change indicators appropriately
+    const carousels = Array.from(document.querySelectorAll(".carousel"));
+    const space = 100; // number of px to move in either direction
+    var prevBtn, nextBtn, carouselCount = 0, carouselItems = [];
 
+    carousels.forEach(carousel => {
+        carousel.id = "carousel"+carouselCount;
+        carousel.dataset.target = 0;
+        carousel.dataset.position = carouselCount;
+        carouselItems.push("#" + carousel.id + " .carousel-track .card.clean");
 
+        document.querySelector("#" + carousel.id + " .ctrl-prev").addEventListener("click", () => {
+            (carousel.dataset.target >= 0) ? carousel.dataset.target = document.querySelectorAll(carouselItems[carousel.dataset.position]).length * -140 : carousel.dataset.target = parseInt(carousel.dataset.target) + space;
+            document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
+                item.style.transform = "translateX(" + carousel.dataset.target + "px)";
+            });
+        });
+        document.querySelector("#" + carousel.id + " .ctrl-next").addEventListener("click", () => {
+            (carousel.dataset.target <= document.querySelectorAll(carouselItems[carousel.dataset.position]).length * -140) ? carousel.dataset.target = 0 : carousel.dataset.target -= space;
+            document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
+                item.style.transform = "translateX(" + carousel.dataset.target + "px)";
+            });
+        });
+        carouselCount++;
+    });
 
+</script>
+}

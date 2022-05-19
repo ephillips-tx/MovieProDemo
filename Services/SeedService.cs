@@ -16,7 +16,7 @@ namespace MovieProDemo.Services
 
         public SeedService(IOptions<AppSettings> appSettings,
                             ApplicationDbContext dbContext,
-                            UserManager<IdentityUser> userManager, 
+                            UserManager<IdentityUser> userManager,
                             RoleManager<IdentityRole> roleManager)
         {
             _appSettings = appSettings.Value;
@@ -63,7 +63,7 @@ namespace MovieProDemo.Services
             await _userManager.AddToRoleAsync(newUser, credentials.Role);
         }
 
-        private async Task SeedCollections() 
+        private async Task SeedCollections()
         {
             if (_dbContext.Collection.Any()) return;
 
@@ -72,7 +72,7 @@ namespace MovieProDemo.Services
                 Name = _appSettings.MovieProSettings.DefaultCollection.Name,
                 Description = _appSettings.MovieProSettings.DefaultCollection.Description
             });
-                
+
             await _dbContext.SaveChangesAsync();
         }
 

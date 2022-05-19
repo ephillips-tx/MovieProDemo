@@ -10,15 +10,18 @@ body > .container {
 header, footer {
     background-color: #181818;
     color: #8a8a8a;
+    z-index: 2;
+}
+
+small {
+    font-size: 80%;
 }
 
 .nav-link {
-    text-decoration: none;
-    color: inherit;
-}
-
-.nav-link:hover {
     color: #c7c7c7;
+}
+.nav-link:hover {
+    color: #777;
 }
 
 .sticky-footer {
@@ -26,6 +29,46 @@ header, footer {
     left: 0;
     bottom: 0;
     width: 100%;
+}
+
+.movieDetails > button, .collections > button {
+    font-family: 'PT Sans Narrow', cursive;
+    font-size: 1.3rem;
+    color: #c7c7c7;
+    margin-right: 45px;
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.movieDetails > button:hover, .collections > button:hover, .active {
+    color: #ffc107; /* bootstrap warning */
+    border-bottom: 2px solid #ffc107;
+}
+
+.inactive {
+    border-bottom: 2px solid rgb(0,0,0,0);
+}
+
+.sectionTitle {
+    font-family: 'PT Sans Narrow', cursive;
+    font-size: 1.1rem;
+}
+
+.movieTitle {
+    font-family: 'Dosis', sans-serif;
+    font-size: 2rem;
+}
+
+.sideHeader {
+    font-family: 'PT Sans Narrow', cursive;
+    font-weight: bolder;
+    margin-bottom: 0px;
+}
+
+#sideSection > div {
+    margin-bottom: 25px;
 }
 
 .btnArrow {
@@ -38,10 +81,129 @@ header, footer {
     content: '*'
 }
 
+.hide {
+    display: none;
+}
+
+.carousel {
+    position: relative;
+}
+.carousel-track {
+    position: inherit;
+    overflow-x: hidden;
+}
+
+.carousel-control {
+    /*display: none; change to display: block on mouseover event*/
+    position: absolute;
+    color: #e7e7e7;
+    background-color: rgb(255,255,255,.3);
+    top: 25%;
+    z-index: 1;
+}
+.ctrl-prev {
+    left: 0;
+}
+.ctrl-next {
+    right: 0;
+}
+
+.carousel-control:hover {
+    background-color: rgb(255,255,255,.5)
+}
+
+.card.clean {
+    background-color: transparent;
+    min-width: 12rem;
+    transition: all 200ms linear;
+}
+.card.clean > img {
+    /*height: 32rem;*/
+    object-fit: cover;
+}
+
+div.text-end > span {
+    font-size: 75%;
+}
+
+.clampOverview {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.clampTitle {
+    font-family: 'PT Sans Narrow', cursive;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.poster:hover img {
+    -webkit-filter: brightness(50%);
+    transition: all .5s ease;
+}
+
+.poster a {
+    visibility: hidden;
+}
+
+.poster:hover a {
+    visibility: visible;
+}
+
+.trailerBtn {
+    font-family: 'PT Sans Narrow', cursive;
+    font-size: 1rem;
+}
+
+/* FLIP BOX - "watch trailer" button animation */
+.flip-box {
+    width: 100%;
+    max-width: 400px;
+    height: 80px;
+    background-color: transparent;
+    border: 1px solid #777;
+    perspective: 1000px; /*3d effect*/
+}
+.flip-box-inner {
+    position: relative;
+    width: inherit;
+    height: inherit;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+.flip-box:hover .flip-box-inner {
+    transform: rotateY(180deg);
+}
+/* Position front and back side */
+.flip-box-front, .flip-box-back {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+}
+/* Style front side */
+.flip-box-front {}
+/* Style the back side */
+.flip-box-back {
+    color: white;
+    transform: rotateY(180deg);
+}
+
 /* MODAL */
 .modal-content {
     background-color: #050326;
     font-weight: bold;
+}
+
+.modal-trailer {
+    width: 450px;
+    height: 205px;
 }
 
 /* DROPDOWN MENU & ITEMS */
@@ -55,20 +217,6 @@ header, footer {
 .dropdown-item:hover {
     background-color: inherit;
     color: #c7c7c7;
-}
-
-.clampOverview {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.clampTitle {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 /* TWITTER TYPEAHEAD / BLOODHOUND */
@@ -95,5 +243,21 @@ header, footer {
 .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
 .material-icons.md-dark { color: rgba(255, 255, 255, 1) }
 .material-icons.md-dark.md-inactive { color: rgba(255, 255, 255, 0.3) }
-.material-icons.orange600 { color: #FB8C00; }
+.orange600 { color: #FB8C00; }
 
+
+@media (min-width: 576px) {
+
+}
+
+@media (min-width: 768px) {
+
+}
+
+
+@media (min-width: 992px) {
+    .modal-trailer {
+        width: 560px;
+        height: 315px;
+    }
+}

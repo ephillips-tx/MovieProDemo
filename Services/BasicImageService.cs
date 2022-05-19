@@ -33,7 +33,7 @@ namespace MovieProDemo.Services
 
         public async Task<byte[]> EncodeImageURLAsync(string imageURL)
         {
-            var client = _httpClient.CreateClient(); 
+            var client = _httpClient.CreateClient();
             var response = await client.GetAsync(imageURL);
             using Stream stream = await response.Content.ReadAsStreamAsync();
 

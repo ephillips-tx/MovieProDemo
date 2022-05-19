@@ -14,7 +14,7 @@ namespace MovieProDemo.Services
         private AppSettings _appSettings;
         private readonly IImageService _imageService;
 
-        public TMDBMappingService(IOptions<AppSettings> appSettings, 
+        public TMDBMappingService(IOptions<AppSettings> appSettings,
                                   IImageService imageService)
         {
             _appSettings = appSettings.Value;
@@ -118,7 +118,7 @@ namespace MovieProDemo.Services
         {
             var movieRating = MovieRating.NR;
             var certification = dates.results.FirstOrDefault(r => r.iso_3166_1 == "US");
-            if(certification is not null)
+            if (certification is not null)
             {
                 var apiRating = certification.release_dates.FirstOrDefault(c => c.certification != "")?.certification.Replace("-", "");
                 if (!string.IsNullOrEmpty(apiRating))
@@ -131,7 +131,7 @@ namespace MovieProDemo.Services
         private string BuildTrailerPath(Videos videos)
         {
             var videoKey = videos.results.FirstOrDefault(r => r.type.ToLower().Trim() == "trailer" && r.key != "")?.key;
-            return string.IsNullOrEmpty(videoKey) ? videoKey : $"{_appSettings.TMDBSettings.BaseYouTubePath}{videoKey}";   
+            return string.IsNullOrEmpty(videoKey) ? videoKey : $"{_appSettings.TMDBSettings.BaseYouTubePath}{videoKey}";
         }
         private async Task<byte[]> EncodeBackdropImageAsync(string path)
         {

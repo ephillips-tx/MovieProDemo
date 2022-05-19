@@ -8,7 +8,7 @@ namespace MovieProDemo.Controllers
         private readonly IRemoteMovieService _tmdbMovieService;
         private readonly IDataMappingService _mappingService;
 
-        public ActorsController(IRemoteMovieService tmdbMovieService, 
+        public ActorsController(IRemoteMovieService tmdbMovieService,
                                 IDataMappingService mappingService)
         {
             _tmdbMovieService = tmdbMovieService;

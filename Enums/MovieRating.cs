@@ -2,7 +2,7 @@
 {
     public enum MovieRating
     {
-        G, 
+        G,
         PG,
         PG13,
         R,

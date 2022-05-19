@@ -5,7 +5,7 @@ namespace MovieProDemo.Models.Database
     public class MovieCast
     {
         public int Id { get; set; }
-        public int MovieId { get; set; }   
+        public int MovieId { get; set; }
 
         public int CastId { get; set; }
         public string Department { get; set; }

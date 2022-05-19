@@ -15,7 +15,7 @@ namespace MovieProDemo.Services
         private readonly AppSettings _appSettings;
         private readonly IHttpClientFactory _httpClient;
 
-        public TMDBMovieService(IOptions<AppSettings> appSettings, 
+        public TMDBMovieService(IOptions<AppSettings> appSettings,
                                 IHttpClientFactory httpClient)
         {
             _appSettings = appSettings.Value;

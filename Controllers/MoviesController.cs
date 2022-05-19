@@ -21,8 +21,8 @@ namespace MovieProDemo.Controllers
 
         public MoviesController(IOptions<AppSettings> appSettings,
                                 ApplicationDbContext context,
-                                IImageService imageService, 
-                                IRemoteMovieService tmdbMovieService, 
+                                IImageService imageService,
+                                IRemoteMovieService tmdbMovieService,
                                 IDataMappingService tmdbMappingService)
         {
             _appSettings = appSettings.Value;
@@ -51,7 +51,7 @@ namespace MovieProDemo.Controllers
             if (_context.Movie.Any(m => m.MovieId == id))
             {
                 var localMovie = await _context.Movie.FirstOrDefaultAsync(m => m.MovieId == id);
-                return RedirectToAction("Details", "Movies", new { id = localMovie.Id, local = true});
+                return RedirectToAction("Details", "Movies", new { id = localMovie.Id, local = true });
             }
 
             // Get the raw data from the API
@@ -206,7 +206,7 @@ namespace MovieProDemo.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", "Movies", new { id = movie.Id, local = true});
+                return RedirectToAction("Details", "Movies", new { id = movie.Id, local = true });
             }
             return View(movie);
         }
@@ -244,7 +244,7 @@ namespace MovieProDemo.Controllers
         {
             return _context.Movie.Any(e => e.Id == id);
         }
-        
+
 
 
         private async Task AddToMovieCollection(int movieId, string collectionName)
