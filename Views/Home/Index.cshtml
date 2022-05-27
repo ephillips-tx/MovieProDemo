@@ -8,6 +8,9 @@
     ViewData["Title"] = "MoviePro";
     var btnClass = "btn btn-lg btn-warning fw-bold w-100";
     var colStyle = string.Empty;
+    var count = 0;
+    var collId = string.Empty;
+    var carouStyle = "carousel";
 }
 
 <div class="row">
@@ -18,25 +21,21 @@
                 <div class="collections">
                     @foreach (var collection in Model.CustomCollections)
                     {
-                        if (collection.Name == "All")
-                        {
-                            colStyle = "active";
-                        }
-                        else
-                        {
-                            colStyle = "inactive";
-                        }
-                        <button class="@colStyle" id="">#@collection.Name</button>
+                        collId = "coll" + count;
+                        colStyle = (collection.Name == "All") ? "active" : "inactive";
+                        <button class="@colStyle" id="@collId">#@collection.Name</button>
+                        count++;
                     }
-                    <div class="text-end mb-1">
-                        <span class="material-symbols-outlined orange600">circle</span>
-                        <span class="material-symbols-outlined">circle</span>
-                        <span class="material-symbols-outlined">circle</span>
-                    </div>
+                    @{ count = 0; }
+                    <div class="text-end mb-1" id="groupIndicator"></div>
                     <div class="carousel-container">
                         @foreach (var collection in Model.CustomCollections)
                         {
-                            <div class="carousel">
+                            @if (count > 0)
+                            {
+                                carouStyle = "carousel hide";
+                            }
+                            <div class="@carouStyle">
                                 <button class="carousel-control ctrl-prev"><span class="material-symbols-outlined">arrow_left</span></button>
                                 <button class="carousel-control ctrl-next"><span class="material-symbols-outlined">arrow_right</span></button>
                                 <div class="carousel-track d-flex flex-nowrap">
@@ -53,7 +52,7 @@
                                     }
                                 </div>
                             </div>
-                            <hr />
+                            count++; 
                         }
                      </div>
                 </div>
@@ -208,34 +207,131 @@
 
 @section Scripts {
 <script>
-    //how to reference the correct button for an unknown # of carousels?
-    // step 1: number the carousels with a forEach and give id or data attribute
-    // step 2: select carousel by id and access its children to target buttons
-    // step 3: set up listeners & change indicators appropriately
+    // one indicator for every 2 movies | every 3 on larger viewport widths
+    var groupSize = 2;
+    //console.log(window.innerWidth);
+    if (window.innerWidth > 768) { // bootstrap md breakpoint
+        groupSize = 3;
+    }
     const carousels = Array.from(document.querySelectorAll(".carousel"));
-    const space = 100; // number of px to move in either direction
-    var prevBtn, nextBtn, carouselCount = 0, carouselItems = [];
+    const collections = Array.from(document.querySelectorAll(".collections > button"));
+    const dotSection = document.getElementById("groupIndicator");
+    var space = document.querySelector(".card.clean").offsetWidth * groupSize; // number of px to move in either direction
+    var prevBtn, nextBtn, numMovies, targetCaroId, visiCaroId = "carousel0", collPos = 0, curr = 0, carouselCount = 0, carouselItems = [], dotArr = [], dotGroups = [], groupList = [];
+    
+    for (let i = 0; i < collections.length; i++) {
+        
+        document.getElementById(collections[i].id).addEventListener("click", () => {
+            collPos = collections[i].id.substring(collections[i].id.length-1);
+            targetCaroId = "carousel" + collPos;
+            // select first element with a class of carousel & transition opacity to 0
+            document.getElementById(visiCaroId).style.opacity = 0;
+            document.getElementById(targetCaroId).style.opacity = 0;
+            document.getElementById(collections[i].id).setAttribute("class", "active");
+            collections.forEach(btn => {
+                if (btn.id != collections[i].id) {
+                    document.getElementById(btn.id).setAttribute("class", "inactive");
+                }
+            });
+            //console.dir(dotGroups);
+            document.getElementById(groupList[collPos]).setAttribute("class", "");
+            document.getElementById(groupList[visiCaroId.substring(visiCaroId.length - 1)]).setAttribute("class", "hide");
+            // after transition ends | hide then show
+            setTimeout(() => {
+                carousels.forEach(carousel => {
+                    if (carousel.id != targetCaroId) {
+                        document.getElementById(carousel.id).setAttribute("class", "carousel hide");
+                    }
+                });
+                document.getElementById(targetCaroId).setAttribute("class", "carousel");
+            }, 500);
+            setTimeout(() => { 
+                document.getElementById(visiCaroId).style.opacity = 1;
+                document.getElementById(targetCaroId).style.opacity = 1;
+                visiCaroId = targetCaroId;
+            },515);
+        });
 
+    }
+    
     carousels.forEach(carousel => {
         carousel.id = "carousel"+carouselCount;
         carousel.dataset.target = 0;
         carousel.dataset.position = carouselCount;
         carouselItems.push("#" + carousel.id + " .carousel-track .card.clean");
 
+        buildDotGroup(carouselCount, carouselItems.length);
+        // the current issue is that the dot ids are named the same in every group and I am not selecting the particular group when adjusting styling. 
+        // find way to specify the particular dotGroup when selecting the dot ids
+        // should be possible using the querySelector method | instead of using getElementById, use querySelector and specify dotGroup before dot id
+
         document.querySelector("#" + carousel.id + " .ctrl-prev").addEventListener("click", () => {
+            console.dir(dotArr);
+            dotArr = getDotArr(carousel.id.substring(carousel.id.length-1), dotGroups);
+
             (carousel.dataset.target >= 0) ? carousel.dataset.target = document.querySelectorAll(carouselItems[carousel.dataset.position]).length * -140 : carousel.dataset.target = parseInt(carousel.dataset.target) + space;
+            document.getElementById(dotArr[curr]).setAttribute("class", "material-symbols-outlined");
+            if (curr == 0) curr = dotArr.length;
+            document.getElementById(dotArr[--curr]).setAttribute("class", "material-symbols-outlined orange600");
             document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
                 item.style.transform = "translateX(" + carousel.dataset.target + "px)";
             });
         });
         document.querySelector("#" + carousel.id + " .ctrl-next").addEventListener("click", () => {
+            console.dir(dotArr);
+            dotArr = getDotArr(carousel.id.substring(carousel.id.length-1), dotGroups);
+
             (carousel.dataset.target <= document.querySelectorAll(carouselItems[carousel.dataset.position]).length * -140) ? carousel.dataset.target = 0 : carousel.dataset.target -= space;
+            document.getElementById(dotArr[curr]).setAttribute("class", "material-symbols-outlined");
+            if (curr == dotArr.length-1) curr = -1;
+            document.getElementById(dotArr[++curr]).setAttribute("class", "material-symbols-outlined orange600");
             document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
                 item.style.transform = "translateX(" + carousel.dataset.target + "px)";
             });
         });
         carouselCount++;
     });
+
+    //grab ids of individ dots
+    for (let i = 0; i < groupList.length; i++) {
+        dotArr = [];
+        for (let x = 0; x < document.getElementById(groupList[i]).children.length; x++) {
+            dotArr.push(dotSection.children[i].children[x].id);
+        }
+        dotGroups.push(dotArr);
+    }
+    
+    function getDotArr(count, group) {
+        dotArr = group[count];
+        return dotArr;
+    }
+
+    function buildDotGroup(index, numMovies) {
+        const dotGroup = document.createElement("div");
+        dotGroup.id = "dotGroup" + index;
+        if (groupList.length > 0) dotGroup.setAttribute("class", "hide");
+        createIndicators(groupSize, dotGroup, numMovies)
+        groupList.push(dotGroup.id);
+        dotSection.append(dotGroup);
+    }
+
+    function createIndicators(size, group, numMovies) {
+        for (let i = 0; i <= size / numMovies; i++) {
+            const dotEle = document.createElement("span");
+            dotEle.id = "dot" + i;
+            dotEle.setAttribute("class", "material-symbols-outlined");
+            if (i == 0) dotEle.classList.add("orange600");
+            dotEle.textContent = "circle";
+            group.append(dotEle);
+        }
+    }
+
+    // setAttributes helper function
+    function setAttributes(el, attrs) {
+        for (var key in attrs) {
+            el.setAttribute(key, attrs[key]);
+        }
+    }
 
 </script>
 }

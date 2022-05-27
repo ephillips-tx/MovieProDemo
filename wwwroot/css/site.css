@@ -87,6 +87,7 @@ small {
 
 .carousel {
     position: relative;
+    transition: all .5s ease-in-out;
 }
 .carousel-track {
     position: inherit;
@@ -115,10 +116,10 @@ small {
 .card.clean {
     background-color: transparent;
     min-width: 12rem;
+    max-width: 12rem;
     transition: all 200ms linear;
 }
 .card.clean > img {
-    /*height: 32rem;*/
     object-fit: cover;
 }
 
