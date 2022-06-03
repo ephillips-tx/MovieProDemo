@@ -69,7 +69,7 @@ namespace MovieProDemo.Services
 
             var requestUri = QueryHelpers.AddQueryString(query, queryParams);
 
-            // Create a client and execute request - goes to tmdb  and gets json data
+            // Create a client and execute request - goes to tmdb and gets json data
             var client = _httpClient.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
             var response = await client.SendAsync(request);
@@ -79,6 +79,11 @@ namespace MovieProDemo.Services
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync();
                 var dcjs = new DataContractJsonSerializer(typeof(MovieDetail));
+                //responseStream.Position = 0;
+                //var sr = new StreamReader(responseStream);
+                //Console.Write("JSON form of async data: ");
+                //Console.WriteLine(sr.ReadToEnd());
+
                 movieDetail = dcjs.ReadObject(responseStream) as MovieDetail;
             }
 

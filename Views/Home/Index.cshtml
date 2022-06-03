@@ -213,6 +213,12 @@
     if (window.innerWidth > 768) { // bootstrap md breakpoint
         groupSize = 3;
     }
+    if (window.innerWidth > 992) { // bootstrap lg breakpoint
+        groupSize = 4;
+    }
+    if (window.innerWidth > 1400) { // bootstrap xxl breakpoint
+        groupSize = 5;
+    }
     const carousels = Array.from(document.querySelectorAll(".carousel"));
     const collections = Array.from(document.querySelectorAll(".collections > button"));
     const dotSection = document.getElementById("groupIndicator");
@@ -220,7 +226,6 @@
     var prevBtn, nextBtn, numMovies, targetCaroId, visiCaroId = "carousel0", collPos = 0, curr = 0, carouselCount = 0, carouselItems = [], dotArr = [], dotGroups = [], groupList = [];
     
     for (let i = 0; i < collections.length; i++) {
-        
         document.getElementById(collections[i].id).addEventListener("click", () => {
             collPos = collections[i].id.substring(collections[i].id.length-1);
             targetCaroId = "carousel" + collPos;
@@ -233,7 +238,7 @@
                     document.getElementById(btn.id).setAttribute("class", "inactive");
                 }
             });
-            //console.dir(dotGroups);
+            
             document.getElementById(groupList[collPos]).setAttribute("class", "");
             document.getElementById(groupList[visiCaroId.substring(visiCaroId.length - 1)]).setAttribute("class", "hide");
             // after transition ends | hide then show
@@ -251,40 +256,49 @@
                 visiCaroId = targetCaroId;
             },515);
         });
-
     }
     
     carousels.forEach(carousel => {
         carousel.id = "carousel"+carouselCount;
-        carousel.dataset.target = 0;
+        carousel.dataset.target = 0; // position in px to translate
         carousel.dataset.position = carouselCount;
         carouselItems.push("#" + carousel.id + " .carousel-track .card.clean");
-
-        buildDotGroup(carouselCount, carouselItems.length);
-        // the current issue is that the dot ids are named the same in every group and I am not selecting the particular group when adjusting styling. 
-        // find way to specify the particular dotGroup when selecting the dot ids
-        // should be possible using the querySelector method | instead of using getElementById, use querySelector and specify dotGroup before dot id
+        
+        buildDotGroup(carouselCount, carouselItems[carouselCount]);
 
         document.querySelector("#" + carousel.id + " .ctrl-prev").addEventListener("click", () => {
-            console.dir(dotArr);
+            // count number of movies in carousel
+            let numMovies = document.querySelectorAll(carouselItems[carousel.dataset.position]).length;
+            // select the correct dot array
             dotArr = getDotArr(carousel.id.substring(carousel.id.length-1), dotGroups);
+            // calculate end position of carousel
+            let endPos = calcEndPos(numMovies);
+            let targetPos = ((parseInt(carousel.dataset.target) + space) > 0) ? 0 : parseInt(carousel.dataset.target) + space;
 
-            (carousel.dataset.target >= 0) ? carousel.dataset.target = document.querySelectorAll(carouselItems[carousel.dataset.position]).length * -140 : carousel.dataset.target = parseInt(carousel.dataset.target) + space;
-            document.getElementById(dotArr[curr]).setAttribute("class", "material-symbols-outlined");
+            (carousel.dataset.target >= 0) ? carousel.dataset.target = endPos : carousel.dataset.target = targetPos;
+            
+            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[curr]).setAttribute("class", "material-symbols-outlined");
             if (curr == 0) curr = dotArr.length;
-            document.getElementById(dotArr[--curr]).setAttribute("class", "material-symbols-outlined orange600");
+            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[--curr]).setAttribute("class", "material-symbols-outlined orange600");
             document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
                 item.style.transform = "translateX(" + carousel.dataset.target + "px)";
             });
         });
         document.querySelector("#" + carousel.id + " .ctrl-next").addEventListener("click", () => {
-            console.dir(dotArr);
+            // count number of movies in carousel
+            let numMovies = document.querySelectorAll(carouselItems[carousel.dataset.position]).length;
+            // select the correct dot array
             dotArr = getDotArr(carousel.id.substring(carousel.id.length-1), dotGroups);
+            // calculate end position of carousel
+            let endPos = calcEndPos(numMovies);
+            let nextNum = numMovies - 2,
+                nextSpace = space / groupSize * -1;
+            
+            (carousel.dataset.target <= endPos ) ? carousel.dataset.target = 0 : carousel.dataset.target -= space;
 
-            (carousel.dataset.target <= document.querySelectorAll(carouselItems[carousel.dataset.position]).length * -140) ? carousel.dataset.target = 0 : carousel.dataset.target -= space;
-            document.getElementById(dotArr[curr]).setAttribute("class", "material-symbols-outlined");
+            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[curr]).setAttribute("class", "material-symbols-outlined");
             if (curr == dotArr.length-1) curr = -1;
-            document.getElementById(dotArr[++curr]).setAttribute("class", "material-symbols-outlined orange600");
+            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[++curr]).setAttribute("class", "material-symbols-outlined orange600");
             document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
                 item.style.transform = "translateX(" + carousel.dataset.target + "px)";
             });
@@ -301,22 +315,27 @@
         dotGroups.push(dotArr);
     }
     
+    function calcEndPos(numberOfMovies) {
+        return ((space / groupSize) * -1) * numberOfMovies + space;
+    }
+
     function getDotArr(count, group) {
         dotArr = group[count];
         return dotArr;
     }
 
-    function buildDotGroup(index, numMovies) {
+    function buildDotGroup(index, carouselSelector) {
         const dotGroup = document.createElement("div");
         dotGroup.id = "dotGroup" + index;
         if (groupList.length > 0) dotGroup.setAttribute("class", "hide");
+        let numMovies = document.querySelectorAll(carouselSelector).length;
         createIndicators(groupSize, dotGroup, numMovies)
         groupList.push(dotGroup.id);
         dotSection.append(dotGroup);
     }
 
     function createIndicators(size, group, numMovies) {
-        for (let i = 0; i <= size / numMovies; i++) {
+        for (let i = 0; i < numMovies / size; i++) {
             const dotEle = document.createElement("span");
             dotEle.id = "dot" + i;
             dotEle.setAttribute("class", "material-symbols-outlined");

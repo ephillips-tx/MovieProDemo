@@ -8,7 +8,7 @@ namespace MovieProDemo.Models.TMDB
         public bool adult { get; set; }
         public string backdrop_path { get; set; }
         public Belongs_To_Collection belongs_to_collection { get; set; }
-        public int budget { get; set; }
+        public long budget { get; set; }
         public Genre[] genres { get; set; }
         public string homepage { get; set; }
         public int id { get; set; }
@@ -21,7 +21,7 @@ namespace MovieProDemo.Models.TMDB
         public Production_Companies[] production_companies { get; set; }
         public Production_Countries[] production_countries { get; set; }
         public string release_date { get; set; }
-        public int revenue { get; set; }
+        public long revenue { get; set; }
         public int runtime { get; set; }
         public Spoken_Languages[] spoken_languages { get; set; }
         public string status { get; set; }

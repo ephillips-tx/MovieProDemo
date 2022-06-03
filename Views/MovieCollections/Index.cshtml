@@ -119,7 +119,7 @@
         const collectionList = document.getElementById("collectionList");
         collectionList.addEventListener("change", ()=>{
             let url = window.location.href.split("Index");
-            window.location.href = url[0]+"Index?Id="+collectionList.value;
+            window.location.href = url[0]+"/Index?Id="+collectionList.value;
         });
 
         const remove = document.getElementById("remove");
@@ -227,10 +227,16 @@
         }
 
         function move(action) {
-            let arrColl = Array.from(inColl);
+            let arrColl = Array.from(inColl), val,
+            chop = 2; // # places to slice off the end of the id, changes if its the 1s or 10s place, needs 100s if collection has > 99 movies
             let selected = arrColl.filter(option => option.hasAttribute("selected"));
             if (selected.length > 1) return alert("You can only select 1 element when changing the order.");
-            let pos = parseInt(selected[0].id.slice(selected[0].id.length-1));
+            
+            val = selected[0].id.slice(selected[0].id.length - chop);
+            let isnum = /^\d+$/.test(val);
+            if (!isnum) chop = 1;
+
+            let pos = parseInt(selected[0].id.slice(selected[0].id.length-chop));
             
             if (action == "up" && pos == 0) return alert("This element is already at the top.");
             if (action == "down" && pos == arrColl.length-1) return alert("This element is already at the bottom.");
