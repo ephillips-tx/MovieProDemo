@@ -1,5 +1,6 @@
 ﻿@using MovieProDemo.ViewModels
 @using MovieProDemo.Services.Interfaces
+@using MovieProDemo.Models.TMDB
 @inject IImageService _imageService
 
 @model LandingPageVM
@@ -10,7 +11,11 @@
     var colStyle = string.Empty;
     var count = 0;
     var collId = string.Empty;
+    var tmdbCollId = string.Empty;
     var carouStyle = "carousel";
+    
+    List<MovieSearchResult[]> tmdbMovieCollections = new List<MovieSearchResult[]>() { Model.NowPlaying.results, Model.Popular.results, Model.TopRated.results, Model.Upcoming.results };
+                                    
 }
 
 <div class="row">
@@ -27,8 +32,8 @@
                         count++;
                     }
                     @{ count = 0; }
-                    <div class="text-end mb-1" id="groupIndicator"></div>
-                    <div class="carousel-container">
+                    <div class="text-end mb-1" id="customIndicatorSect"></div>
+                    <div class="carousel-container" id="cstmCarousel">
                         @foreach (var collection in Model.CustomCollections)
                         {
                             @if (count > 0)
@@ -59,157 +64,68 @@
             </div>
         </div>
     </div>
-</div>
-
-
-
-
-@*<section class="px-4">
-    <div class="row">
-        <span class="btn btn-lg btn-block btn-warning fw-bolder border-dark">UPCOMING</span>
-    </div>
-    <div class="row">
-        <div class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @{
-                    var classText = "active";
-                    for (var slide = 0; slide <= 3; slide++)
+    <div class="col-12">
+        <h4 class="mb-3">TMDB Movies</h4>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="collections">
+                    @{
+                        string[] tmdbCollections = new string[] { "NOW PLAYING", "POPULAR", "TOP RATED", "UPCOMING" };
+                        count = 0;
+                    }
+                    @foreach (var collection in tmdbCollections)
                     {
-                        <div class="carousel-item @classText">
-                            <div class="row">
-                                @foreach (var movie in Model.Upcoming.results.Skip(slide * 4).Take(4))
-                                {
-                                    <div class="col-sm-3 mb-2">
-                                        <div class="card" style="width: 18rem; min-height: 74vh;">
+                        tmdbCollId = "tmdbColl" + count;
+                        colStyle = (tmdbCollections[count] == tmdbCollections[0]) ? "active" : "inactive";
+                        <button class="@colStyle" id="@tmdbCollId">#@tmdbCollections[count]</button>
+                        count++;
+                    }
+                    @{ int index = 0; }
+                    <div class="text-end mb-1" id="tmdbIndicatorSect"></div>
+                    <div class="carousel-container" id="tmdbCarousel">
+                        @foreach (var collection in tmdbMovieCollections)
+                        {
+                            @if (index > 0)
+                            {
+                                carouStyle = "carousel hide";
+                            }
+                            <div class="@carouStyle">
+                                <button class="carousel-control ctrl-prev"><span class="material-symbols-outlined">arrow_left</span></button>
+                                <button class="carousel-control ctrl-next"><span class="material-symbols-outlined">arrow_right</span></button>
+                                <div class="carousel-track d-flex flex-nowrap">
+                                    @{
+                                        int movieCount = ViewBag.MovieCount;
+                                        var tmdbMovie = tmdbMovieCollections[index];
+                                    }
+                                    @foreach(var movie in tmdbMovie)
+                                    {
+                                        <div class="card clean">
                                             <img src="@movie.poster_path" class="card-img-top img-fluid" alt="Movie Poster">
                                             <div class="card-body">
                                                 <h5 class="card-title clampTitle">@movie.title</h5>
                                                 <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
+                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="">More Info</a>
                                             </div>
                                         </div>
-                                    </div>
-                                }
+                                    }
+                                </div>
                             </div>
-                        </div>
-                        classText = "";
-                    }
-                }
+                            index++; 
+                        }
+                     </div>
+                </div>
             </div>
         </div>
     </div>
-</section>
-<section class="px-4">
-    <div class="row">
-        <span class="btn btn-lg btn-block btn-warning fw-bolder border-dark">NOW PLAYING</span>
-    </div>
-    <div class="row">
-        <div class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @{
-                    classText = "active";
-                    for (var slide = 0; slide <= 3; slide++)
-                    {
-                        <div class="carousel-item @classText">
-                            <div class="row">
-                                @foreach (var movie in Model.NowPlaying.results.Skip(slide * 4).Take(4))
-                                {
-                                    <div class="col-sm-3 mb-2">
-                                        <div class="card" style="width: 18rem; min-height: 74vh;">
-                                            <img src="@movie.poster_path" class="card-img-top" alt="">
-                                            <div class="card-body">
-                                                <h5 class="card-title clampTitle">@movie.title</h5>
-                                                <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        classText = "";
-                    }
-                }
-            </div>
-        </div>
-    </div>
-</section>
-<section class="px-4">
-    <div class="row">
-        <span class="btn btn-lg btn-block btn-warning fw-bolder border-dark">POPULAR</span>
-    </div>
-    <div class="row">
-        <div class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @{
-                    classText = "active";
-                    for (var slide = 0; slide <= 3; slide++)
-                    {
-                        <div class="carousel-item @classText">
-                            <div class="row">
-                                @foreach (var movie in Model.Popular.results.Skip(slide * 4).Take(4))
-                                {
-                                    <div class="col-sm-3 mb-2">
-                                        <div class="card" style="width: 18rem; min-height: 74vh;">
-                                            <img src="@movie.poster_path" class="card-img-top" alt="">
-                                            <div class="card-body">
-                                                <h5 class="card-title clampTitle">@movie.title</h5>
-                                                <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        classText = "";
-                    }
-                }
-            </div>
-        </div>
-    </div>
-</section>
-<section class="px-4">
-    <div class="row">
-        <span class="btn btn-lg btn-block btn-warning fw-bolder border-dark">TOP RATED</span>
-    </div>
-    <div class="row">
-        <div class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @{
-                    classText = "active";
-                    for (var slide = 0; slide <= 3; slide++)
-                    {
-                        <div class="carousel-item @classText">
-                            <div class="row">
-                                @foreach (var movie in Model.TopRated.results.Skip(slide * 4).Take(4))
-                                {
-                                    <div class="col-sm-3 mb-2">
-                                        <div class="card" style="width: 18rem; min-height: 74vh;">
-                                            <img src="@movie.poster_path" class="card-img-top" alt="">
-                                            <div class="card-body">
-                                                <h5 class="card-title clampTitle">@movie.title</h5>
-                                                <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="@btnClass">Details</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        classText = "";
-                    }
-                }
-            </div>
-        </div>
-    </div>
-</section>*@
+</div>
+
+
 
 @section Scripts {
 <script>
-    // one indicator for every 2 movies | every 3 on larger viewport widths
+    // groupSize is basically how many movie posters to fully display. 
     var groupSize = 2;
-    //console.log(window.innerWidth);
+    
     if (window.innerWidth > 768) { // bootstrap md breakpoint
         groupSize = 3;
     }
@@ -219,9 +135,11 @@
     if (window.innerWidth > 1400) { // bootstrap xxl breakpoint
         groupSize = 5;
     }
-    const carousels = Array.from(document.querySelectorAll(".carousel"));
+
+    const cstmCarousels = Array.from(document.querySelectorAll("#cstmCarousel > .carousel"));
+    const tmdbCarousels = Array.from(document.querySelectorAll("#tmdbCarousel > .carousel"));
     const collections = Array.from(document.querySelectorAll(".collections > button"));
-    const dotSection = document.getElementById("groupIndicator");
+    const dotSection = document.getElementById("customIndicatorSect");
     var space = document.querySelector(".card.clean").offsetWidth * groupSize; // number of px to move in either direction
     var prevBtn, nextBtn, numMovies, targetCaroId, visiCaroId = "carousel0", collPos = 0, curr = 0, carouselCount = 0, carouselItems = [], dotArr = [], dotGroups = [], groupList = [];
     
@@ -243,7 +161,7 @@
             document.getElementById(groupList[visiCaroId.substring(visiCaroId.length - 1)]).setAttribute("class", "hide");
             // after transition ends | hide then show
             setTimeout(() => {
-                carousels.forEach(carousel => {
+                cstmCarousels.forEach(carousel => {
                     if (carousel.id != targetCaroId) {
                         document.getElementById(carousel.id).setAttribute("class", "carousel hide");
                     }
@@ -258,7 +176,7 @@
         });
     }
     
-    carousels.forEach(carousel => {
+    cstmCarousels.forEach(carousel => {
         carousel.id = "carousel"+carouselCount;
         carousel.dataset.target = 0; // position in px to translate
         carousel.dataset.position = carouselCount;

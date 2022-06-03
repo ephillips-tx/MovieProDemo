@@ -37,7 +37,7 @@ namespace MovieProDemo.Controllers
                 TopRated = await _tmdbMovieService.SearchMoviesAsync(Enums.MovieCategory.top_rated, count),
                 Upcoming = await _tmdbMovieService.SearchMoviesAsync(Enums.MovieCategory.upcoming, count)
             };
-
+            ViewBag.MovieCount = count;
             return View(data);
         }
 
