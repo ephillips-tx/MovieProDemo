@@ -43,7 +43,7 @@
                             <div class="embed-responsive embed-responsive-16by9">
                                 @{
                                     // isolate a piece of data to use as embed source
-                                    var key = movie.TrailerUrl.Split("=").Last();
+                                    var key = (movie.TrailerUrl != null) ? movie.TrailerUrl.Split("=").Last() : "dQw4w9WgXcQ";
                                     var source = $"https://www.youtube.com/embed/{key}";
                                 }
                                 <!--original: width="560" height="315" trailer has 2 sizes based on viewport width-->

@@ -1,6 +1,15 @@
+:root {
+    --bswarning: #ffc107;
+    --bsdark: #212529;
+    --bslight: #f8f9fa;
+    --light: #e8e8e8; /*e8, e7, c7, 777*/
+    --dark: #181818;
+    --darknavy: #050326;
+}
+
 body {
-    background-color: #050326;
-    color: #e8e8e8;
+    background-color: var(--darknavy);
+    color: var(--light);
 }
 
 body > .container {
@@ -8,9 +17,9 @@ body > .container {
 }
 
 header, footer {
-    background-color: #181818;
-    color: #8a8a8a;
-    z-index: 2;
+    background-color: var(--dark);
+    color: var(--light);
+    z-index: 4;
 }
 
 small {
@@ -18,10 +27,11 @@ small {
 }
 
 .nav-link {
-    color: #c7c7c7;
+    color: var(--light);
 }
 .nav-link:hover {
-    color: #777;
+    color: var(--light);
+    opacity: .4;
 }
 
 .sticky-footer {
@@ -34,7 +44,7 @@ small {
 .movieDetails > button, .collections > button {
     font-family: 'PT Sans Narrow', cursive;
     font-size: 1.3rem;
-    color: #c7c7c7;
+    color: var(--light);
     margin-right: 45px;
     background-color: transparent;
     border-top: none;
@@ -43,12 +53,12 @@ small {
 }
 
 .movieDetails > button:hover, .collections > button:hover, .active {
-    color: #ffc107; /* bootstrap warning */
-    border-bottom: 2px solid #ffc107;
+    color: var(--bswarning); 
+    border-bottom: 2px solid var(--bswarning);
 }
 
 .inactive {
-    border-bottom: 2px solid rgb(0,0,0,0);
+    border-bottom: 2px solid rgb(0,0,0,0); 
 }
 
 .sectionTitle {
@@ -73,8 +83,8 @@ small {
 
 .btnArrow {
     width: 100%;
-    background-color: #212529; /* bootstrap dark */
-    border: thick solid #ffc107; /* bootstrap warning */
+    background-color: var(--bsdark); /* bootstrap dark */
+    border: thick solid var(--bswarning); /* bootstrap warning */
 }
 
 .asterisk::before {
@@ -97,20 +107,22 @@ small {
 .carousel-control {
     /*display: none; change to display: block on mouseover event*/
     position: absolute;
-    color: #e7e7e7;
+    color: var(--light);
     background-color: rgb(255,255,255,.3);
-    top: 25%;
-    z-index: 1;
+    top: 12%;
+    z-index: 3;
 }
 .ctrl-prev {
     left: 0;
+    height: 50%;
 }
 .ctrl-next {
     right: 0;
+    height: 50%;
 }
 
 .carousel-control:hover {
-    background-color: rgb(255,255,255,.5)
+    background-color: rgb(255,169,0,.5) /* bootstrap warning */
 }
 
 .card.clean {
@@ -123,8 +135,9 @@ small {
     object-fit: cover;
 }
 
-div.text-end > span {
-    font-size: 75%;
+/* dot indicator size */
+div.text-end > div > span {
+    font-size: 80%;
 }
 
 .clampOverview {
@@ -140,6 +153,53 @@ div.text-end > span {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.fixOverlay > span {
+    display: none;
+    color: var(--bswarning);
+}
+
+.card.clean:hover > .fixOverlay > span {
+    display: block;
+}
+
+.card.clean:hover > .card-body {
+    opacity: .4;
+    color: var(--light);
+}
+
+.card.clean:hover > .fixOverlay > img {
+    opacity: .4;
+}
+.card.clean:hover > .fixOverlay:hover > span {
+    opacity: 1;
+}
+
+.fixOverlay {
+    position: relative;
+}
+
+.fixOverlay:hover::after {
+    position: absolute;
+    z-index: 2;
+    top: 10%;
+    left: 5%;
+    content: attr(data-overview);
+    color: var(--light);
+}
+
+.overlay {
+    position: relative;
+    color: inherit;
+    text-decoration: none;
+}
+
+.centered {
+    position: absolute;
+    z-index: 2;
+    top: 80%;
+    left: 30%;
 }
 
 .poster:hover img {
@@ -166,7 +226,7 @@ div.text-end > span {
     max-width: 400px;
     height: 80px;
     background-color: transparent;
-    border: 1px solid #777;
+    border: 1px solid var(--bslight);
     perspective: 1000px; /*3d effect*/
 }
 .flip-box-inner {
@@ -198,7 +258,7 @@ div.text-end > span {
 
 /* MODAL */
 .modal-content {
-    background-color: #050326;
+    background-color: var(--darknavy);
     font-weight: bold;
 }
 
@@ -209,21 +269,21 @@ div.text-end > span {
 
 /* DROPDOWN MENU & ITEMS */
 .dropdown-menu {
-    background-color: #181818;
+    background-color: var(--dark);
 }
 
 .dropdown-item {
-    color: #8a8a8a;
+    color: var(--light);
 }
-.dropdown-item:hover {
-    background-color: inherit;
-    color: #c7c7c7;
-}
+    .dropdown-item:hover {
+        background-color: inherit;
+        color: var(--light);
+    }
 
 /* TWITTER TYPEAHEAD / BLOODHOUND */
 .tt-dataset-titles {
     padding: 15px;
-    background-color: #c7c7c7;
+    background-color: var(--light);
     border-radius: 15px;
 }
 
@@ -232,9 +292,9 @@ div.text-end > span {
     border-radius: 15px;
 }
 
-.tt-dataset-titles > div:hover {
-    background-color: #ffc107;
-}
+    .tt-dataset-titles > div:hover {
+        background-color: var(--bswarning); /* alt color #ffc107 */
+    }
 
 
 /* GOOGLE MATERIAL ICONS: based on guidelines */

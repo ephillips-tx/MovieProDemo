@@ -7,10 +7,9 @@
 
 @{
     ViewData["Title"] = "MoviePro";
-    var btnClass = "btn btn-lg btn-warning fw-bold w-100";
     var colStyle = string.Empty;
     var count = 0;
-    var collId = string.Empty;
+    var cstmCollId = string.Empty;
     var tmdbCollId = string.Empty;
     var carouStyle = "carousel";
     
@@ -23,16 +22,16 @@
         <h4 class="mb-3">CUSTOM COLLECTIONS</h4>
         <div class="row mb-4">
             <div class="col-12">
-                <div class="collections">
+                <div class="collections" id="cstmCollections">
                     @foreach (var collection in Model.CustomCollections)
                     {
-                        collId = "coll" + count;
+                        cstmCollId = "cstmColl" + count;
                         colStyle = (collection.Name == "All") ? "active" : "inactive";
-                        <button class="@colStyle" id="@collId">#@collection.Name</button>
+                        <button class="@colStyle" id="@cstmCollId">#@collection.Name</button>
                         count++;
                     }
                     @{ count = 0; }
-                    <div class="text-end mb-1" id="customIndicatorSect"></div>
+                    <div class="text-end mb-1" id="cstmIndicatorSect"></div>
                     <div class="carousel-container" id="cstmCarousel">
                         @foreach (var collection in Model.CustomCollections)
                         {
@@ -46,14 +45,33 @@
                                 <div class="carousel-track d-flex flex-nowrap">
                                     @foreach(var movie in collection.MovieCollections)
                                     {
-                                        <div class="card clean">
-                                            <img src="@_imageService.DecodeImage(movie.Movie.Poster, movie.Movie.PosterType)" class="card-img-top img-fluid" alt="Movie Poster">
-                                            <div class="card-body">
-                                                <h5 class="card-title clampTitle">@movie.Movie.Title</h5>
-                                                <p class="card-text clampOverview">@movie.Movie.Overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.Movie.MovieId" class="">More Info</a>
+                                        // cutoff length for overview is 175
+                                        int overviewLength = movie.Movie.Overview.Length;
+                                        int cap = (overviewLength < 175) ? overviewLength : 175;
+                                        string overview = movie.Movie.Overview.Substring(0,cap);
+                                        if (overviewLength > 175)
+                                        {
+                                            overview += "...";
+                                        }
+
+                                        <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.Movie.MovieId" class="overlay">
+                                            <div class="card clean">
+                                                <div class="fixOverlay" data-overview="@overview">
+                                                    <img src="@_imageService.DecodeImage(movie.Movie.Poster, movie.Movie.PosterType)" class="card-img-top img-fluid" alt="Movie Poster">
+                                                    <span class="centered">More Info</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title clampTitle">
+                                                        @movie.Movie.Title
+                                                    </h5>
+                                                    <h5>
+                                                        <span class="material-symbols-outlined text-warning">star</span><large>@movie.Movie.VoteAverage</large><small>/10</small> 
+                                                    </h5>
+                                                    @*<p class="card-text clampOverview">@movie.Movie.Overview</p>*@
+                                                    @*<a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.Movie.MovieId" class="">More Info</a>*@
+                                                </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     }
                                 </div>
                             </div>
@@ -65,13 +83,14 @@
         </div>
     </div>
     <div class="col-12">
-        <h4 class="mb-3">TMDB Movies</h4>
+        <h4 class="mb-3">TMDB COLLECTIONS</h4>
         <div class="row mb-4">
             <div class="col-12">
-                <div class="collections">
+                <div class="collections" id="tmdbCollections">
                     @{
                         string[] tmdbCollections = new string[] { "NOW PLAYING", "POPULAR", "TOP RATED", "UPCOMING" };
                         count = 0;
+                        carouStyle = "carousel";
                     }
                     @foreach (var collection in tmdbCollections)
                     {
@@ -99,14 +118,30 @@
                                     }
                                     @foreach(var movie in tmdbMovie)
                                     {
-                                        <div class="card clean">
-                                            <img src="@movie.poster_path" class="card-img-top img-fluid" alt="Movie Poster">
-                                            <div class="card-body">
-                                                <h5 class="card-title clampTitle">@movie.title</h5>
-                                                <p class="card-text clampOverview">@movie.overview</p>
-                                                <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="">More Info</a>
+                                        // cutoff length for overview is 175
+                                        int overviewLength = movie.overview.Length;
+                                        int cap = (overviewLength < 175) ? overviewLength : 175;
+                                        string overview = movie.overview.Substring(0,cap);
+                                        if (overviewLength > 175)
+                                        {
+                                            overview += "...";
+                                        }
+
+                                        <a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.id" class="overlay">
+                                            <div class="card clean">
+                                                <div class="fixOverlay" data-overview="@overview">
+                                                    <img src="@movie.poster_path" class="card-img-top img-fluid" alt="Movie Poster">
+                                                    <span class="centered">More Info</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title clampTitle">@movie.title</h5>
+                                                    <h5>
+                                                        <span class="material-symbols-outlined text-warning">star</span><large>@movie.vote_average</large><small>/10</small> 
+                                                    </h5>
+                                                    @*<p class="card-text clampOverview">@movie.overview</p>*@
+                                                </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     }
                                 </div>
                             </div>
@@ -136,32 +171,54 @@
         groupSize = 5;
     }
 
+    // anything specifically selecting for cstm needs to select for tmdb
+    // generate new ids for the tmdb carousel. 
+
     const cstmCarousels = Array.from(document.querySelectorAll("#cstmCarousel > .carousel"));
     const tmdbCarousels = Array.from(document.querySelectorAll("#tmdbCarousel > .carousel"));
-    const collections = Array.from(document.querySelectorAll(".collections > button"));
-    const dotSection = document.getElementById("customIndicatorSect");
+    const allCollections = Array.from(document.querySelectorAll(".collections > button"));
+    const collections = [Array.from(document.querySelectorAll("#cstmCollections > button")), Array.from(document.querySelectorAll("#tmdbCollections > button"))];
+    const dotSection = [document.getElementById("cstmIndicatorSect"), document.getElementById("tmdbIndicatorSect")];
     var space = document.querySelector(".card.clean").offsetWidth * groupSize; // number of px to move in either direction
-    var prevBtn, nextBtn, numMovies, targetCaroId, visiCaroId = "carousel0", collPos = 0, curr = 0, carouselCount = 0, carouselItems = [], dotArr = [], dotGroups = [], groupList = [];
+    var prevBtn, nextBtn, numMovies, targetCaroId, visiCaroId = ["cstmCarousel0","tmdbCarousel0"], sectIndex, collPos = 0, curr = 0, carouselCount = [0,0];
+    var carouselItems = [[],[]], dotArr = [], arrDotArr = [], dotGroups = [], groupList = [[],[]], selectedCarousel;
     
-    for (let i = 0; i < collections.length; i++) {
-        document.getElementById(collections[i].id).addEventListener("click", () => {
-            collPos = collections[i].id.substring(collections[i].id.length-1);
-            targetCaroId = "carousel" + collPos;
-            // select first element with a class of carousel & transition opacity to 0
-            document.getElementById(visiCaroId).style.opacity = 0;
-            document.getElementById(targetCaroId).style.opacity = 0;
-            document.getElementById(collections[i].id).setAttribute("class", "active");
-            collections.forEach(btn => {
-                if (btn.id != collections[i].id) {
+    for (let i = 0; i < allCollections.length; i++) {
+        document.getElementById(allCollections[i].id).addEventListener("click", () => {
+            collPos = allCollections[i].id.slice(-1);
+            // identify collection that was clicked by position in array
+            if (allCollections[i].id.slice(0, 4) == "tmdb") {
+                targetCaroId = "tmdbCarousel" + collPos;
+                sectIndex = 1;
+            } 
+            else {
+                targetCaroId = "cstmCarousel" + collPos;
+                sectIndex = 0;
+            }
+
+            // check if it is the current collection, if so, do nothing
+            if (targetCaroId == visiCaroId[sectIndex]) return;
+            // visually transition to target collection 
+            transitionCollection(targetCaroId, visiCaroId[sectIndex])
+            
+            let x = i;
+            if (i > collections[0].length - 1) x = i - collections[0].length;
+            
+            // set collection button to active 
+            document.getElementById(collections[sectIndex][x].id).setAttribute("class", "active");
+
+            collections[sectIndex].forEach(btn => {
+                if (btn.id != collections[sectIndex][x].id) {
                     document.getElementById(btn.id).setAttribute("class", "inactive");
                 }
             });
-            
-            document.getElementById(groupList[collPos]).setAttribute("class", "");
-            document.getElementById(groupList[visiCaroId.substring(visiCaroId.length - 1)]).setAttribute("class", "hide");
+            // change active dot indicator
+            document.getElementById(groupList[sectIndex][collPos]).setAttribute("class", "");
+            document.getElementById(groupList[sectIndex][visiCaroId[sectIndex].substring(visiCaroId[sectIndex].length - 1)]).setAttribute("class", "hide");
             // after transition ends | hide then show
+            selectedCarousel = (sectIndex == 0) ? cstmCarousels : tmdbCarousels;
             setTimeout(() => {
-                cstmCarousels.forEach(carousel => {
+                selectedCarousel.forEach(carousel => {
                     if (carousel.id != targetCaroId) {
                         document.getElementById(carousel.id).setAttribute("class", "carousel hide");
                     }
@@ -169,24 +226,27 @@
                 document.getElementById(targetCaroId).setAttribute("class", "carousel");
             }, 500);
             setTimeout(() => { 
-                document.getElementById(visiCaroId).style.opacity = 1;
+                document.getElementById(visiCaroId[sectIndex]).style.opacity = 1;
                 document.getElementById(targetCaroId).style.opacity = 1;
-                visiCaroId = targetCaroId;
+                visiCaroId[sectIndex] = targetCaroId;
             },515);
         });
     }
     
     cstmCarousels.forEach(carousel => {
-        carousel.id = "carousel"+carouselCount;
+        carousel.id = "cstmCarousel"+carouselCount[0];
         carousel.dataset.target = 0; // position in px to translate
-        carousel.dataset.position = carouselCount;
-        carouselItems.push("#" + carousel.id + " .carousel-track .card.clean");
-        
-        buildDotGroup(carouselCount, carouselItems[carouselCount]);
+        carousel.dataset.position = carouselCount[0];
+        carousel.dataset.loc = 0;
+        let c1 = "cstm";
+
+        carouselItems[0].push("#" + carousel.id + " .carousel-track .card.clean");
+        // carouselCount tracks number of carousels and is the same as number of collections
+        buildDotGroup(carouselCount[0], carouselItems[0][carouselCount[0]], c1);
 
         document.querySelector("#" + carousel.id + " .ctrl-prev").addEventListener("click", () => {
             // count number of movies in carousel
-            let numMovies = document.querySelectorAll(carouselItems[carousel.dataset.position]).length;
+            let numMovies = document.querySelectorAll(carouselItems[0][carousel.dataset.position]).length;
             // select the correct dot array
             dotArr = getDotArr(carousel.id.substring(carousel.id.length-1), dotGroups);
             // calculate end position of carousel
@@ -195,16 +255,16 @@
 
             (carousel.dataset.target >= 0) ? carousel.dataset.target = endPos : carousel.dataset.target = targetPos;
             
-            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[curr]).setAttribute("class", "material-symbols-outlined");
-            if (curr == 0) curr = dotArr.length;
-            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[--curr]).setAttribute("class", "material-symbols-outlined orange600");
+            document.querySelector("#"+c1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined");
+            if (carousel.dataset.loc == 0) carousel.dataset.loc = dotArr.length;
+            document.querySelector("#"+c1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[--carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined orange600");
             document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
                 item.style.transform = "translateX(" + carousel.dataset.target + "px)";
             });
         });
         document.querySelector("#" + carousel.id + " .ctrl-next").addEventListener("click", () => {
             // count number of movies in carousel
-            let numMovies = document.querySelectorAll(carouselItems[carousel.dataset.position]).length;
+            let numMovies = document.querySelectorAll(carouselItems[0][carousel.dataset.position]).length;
             // select the correct dot array
             dotArr = getDotArr(carousel.id.substring(carousel.id.length-1), dotGroups);
             // calculate end position of carousel
@@ -213,26 +273,95 @@
                 nextSpace = space / groupSize * -1;
             
             (carousel.dataset.target <= endPos ) ? carousel.dataset.target = 0 : carousel.dataset.target -= space;
-
-            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[curr]).setAttribute("class", "material-symbols-outlined");
-            if (curr == dotArr.length-1) curr = -1;
-            document.querySelector("#dotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[++curr]).setAttribute("class", "material-symbols-outlined orange600");
+            
+            document.querySelector("#"+c1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined");
+            if (carousel.dataset.loc == dotArr.length-1) carousel.dataset.loc = -1;
+            document.querySelector("#"+c1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[++carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined orange600");
             document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
                 item.style.transform = "translateX(" + carousel.dataset.target + "px)";
             });
         });
-        carouselCount++;
+        carouselCount[0]++;
     });
 
-    //grab ids of individ dots
-    for (let i = 0; i < groupList.length; i++) {
-        dotArr = [];
-        for (let x = 0; x < document.getElementById(groupList[i]).children.length; x++) {
-            dotArr.push(dotSection.children[i].children[x].id);
+    tmdbCarousels.forEach(carousel => {
+        carousel.id = "tmdbCarousel"+carouselCount[1];
+        carousel.dataset.target = 0; // position in px to translate
+        carousel.dataset.position = carouselCount[1];
+        carousel.dataset.loc = 0;
+        let t1 = "tmdb";
+        carouselItems[1].push("#" + carousel.id + " .carousel-track .card.clean");
+        // carouselCount tracks number of carousels and is the same as number of collections
+        buildDotGroup(carouselCount[1], carouselItems[1][carouselCount[1]], t1);
+
+        document.querySelector("#" + carousel.id + " .ctrl-prev").addEventListener("click", () => {
+            // count number of movies in carousel
+            let numMovies = document.querySelectorAll(carouselItems[1][carousel.dataset.position]).length;
+            // select the correct dot array
+            //console.dir(dotGroups);
+            let tmdbDotGroup = parseInt(carousel.id.substring(carousel.id.length - 1)) + collections[0].length;
+            dotArr = getDotArr(tmdbDotGroup, dotGroups);
+            // calculate end position of carousel
+            let endPos = calcEndPos(numMovies);
+            let targetPos = ((parseInt(carousel.dataset.target) + space) > 0) ? 0 : parseInt(carousel.dataset.target) + space;
+
+            (carousel.dataset.target >= 0) ? carousel.dataset.target = endPos : carousel.dataset.target = targetPos;
+            
+            document.querySelector("#"+t1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined");
+            if (carousel.dataset.loc == 0) carousel.dataset.loc = dotArr.length;
+            
+            document.querySelector("#"+t1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[--carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined orange600");
+            document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
+                item.style.transform = "translateX(" + carousel.dataset.target + "px)";
+            });
+        });
+        document.querySelector("#" + carousel.id + " .ctrl-next").addEventListener("click", () => {
+            // count number of movies in carousel
+            let numMovies = document.querySelectorAll(carouselItems[1][carousel.dataset.position]).length;
+            // select the correct dot array
+            let tmdbDotGroup = parseInt(carousel.id.substring(carousel.id.length - 1)) + collections[0].length;
+            dotArr = getDotArr(tmdbDotGroup, dotGroups);
+            // calculate end position of carousel
+            let endPos = calcEndPos(numMovies);
+            let nextNum = numMovies - 2,
+                nextSpace = space / groupSize * -1;
+            
+            (carousel.dataset.target <= endPos ) ? carousel.dataset.target = 0 : carousel.dataset.target -= space;
+            
+            document.querySelector("#"+t1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined");
+            if (carousel.dataset.loc == dotArr.length-1) carousel.dataset.loc = -1;
+            document.querySelector("#"+t1+"DotGroup"+carousel.id.substring(carousel.id.length-1)+" > #"+dotArr[++carousel.dataset.loc]).setAttribute("class", "material-symbols-outlined orange600");
+            document.querySelectorAll("#"+ carousel.id + " .carousel-track .card.clean").forEach(item => {
+                item.style.transform = "translateX(" + carousel.dataset.target + "px)";
+            });
+        });
+        carouselCount[1]++;
+    });
+     /************************************************
+      * section level, collection / carousel level, movie level
+      * 
+      ************************************************/
+
+    //console.dir(carouselItems);
+    // grab ids of individ dots
+    for (let y = 0; y < dotSection.length; y++) { 
+        for (let i = 0; i < groupList[y].length; i++) {
+            dotArr = [];
+            for (let x = 0; x < document.getElementById(groupList[y][i]).children.length; x++) {
+                dotArr.push(dotSection[y].children[i].children[x].id);
+            }
+            dotGroups.push(dotArr);
         }
-        dotGroups.push(dotArr);
     }
     
+    function transitionCollection(targetId, currentId) {
+        //console.log(currentId);
+        //console.log(targetId);
+
+        document.getElementById(currentId).style.opacity = 0;
+        document.getElementById(targetId).style.opacity = 0;
+    }
+
     function calcEndPos(numberOfMovies) {
         return ((space / groupSize) * -1) * numberOfMovies + space;
     }
@@ -241,15 +370,16 @@
         dotArr = group[count];
         return dotArr;
     }
-
-    function buildDotGroup(index, carouselSelector) {
-        const dotGroup = document.createElement("div");
-        dotGroup.id = "dotGroup" + index;
-        if (groupList.length > 0) dotGroup.setAttribute("class", "hide");
+    // index is the current carousel/collection being looped over
+    function buildDotGroup(index, carouselSelector, sectName) {
+        const DotGroup = document.createElement("div");
+        let sectNum = (sectName == "tmdb") ? 1 : 0;
+        DotGroup.id = sectName + "DotGroup" + index;
+        if (groupList[sectNum].length > 0) DotGroup.setAttribute("class", "hide");
         let numMovies = document.querySelectorAll(carouselSelector).length;
-        createIndicators(groupSize, dotGroup, numMovies)
-        groupList.push(dotGroup.id);
-        dotSection.append(dotGroup);
+        createIndicators(groupSize, DotGroup, numMovies)
+        groupList[sectNum].push(DotGroup.id);
+        dotSection[sectNum].append(DotGroup);
     }
 
     function createIndicators(size, group, numMovies) {
