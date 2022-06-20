@@ -5,10 +5,19 @@
 
 @model List<Movie>
 
+@{
+    var errorMessage = TempData["errMsg"];
+    Console.WriteLine("Message is: "+errorMessage);
+}
+
 <div class="row">
     <div class="col-8 text-center mx-auto">
         <h2 class="mb-5">DISCOVER &amp; IMPORT MOVIES</h2>
         <h6>Bloodhound's typeahead feature combined with the TMDB API allows us to both discover and import movies!</h6>
+        @if( errorMessage != null )
+        {
+            <h5 class="text-danger">@errorMessage</h5>
+        }
     </div>
     <form class="col-8 mx-auto mb-5" id="importForm" asp-controller="Movies" asp-action="Import">
         <hr class="fw-bold text-warning" />
@@ -40,65 +49,4 @@
         </div>
     }
 </div>
-
-@section Scripts {
-    <script src="~/js/typeahead.bundle.js"></script>
-
-    <script>
-        let apiKey = '@ViewData["api_key"]';
-
-        document.getElementById("importBtn").addEventListener("click", getMovieId);
-
-        // Bloodhound with Remote
-        var movies_suggestions = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            remote: {
-                 url: "https://api.themoviedb.org/3/search/movie?api_key="+apiKey+"&query=%QUERY",
-                 wildcard: "%QUERY",
-                 transform: function(response){
-                     return response.results;
-                 }
-            },
-            //identify: function(item){
-            //    return item.id;
-            //}
-        });
-
-        // init Typeahead
-        $('#movieSearch').typeahead(
-        {
-            // CONFIGURATION OPTIONS
-            highlight: true,
-            minLength: 2
-        },
-        {
-            // DATASET OPTIONS
-            name: "titles",
-            source: movies_suggestions, // suggestion engine (bloodhound) is passed as the source
-            display: function(item){
-                return item.title;
-            },
-            limit: 5,
-            templates: {
-                notFound: '<div>Not Found</div>',
-                pending: "<div>Loading...</div>",
-                suggestion: function(item){
-                    let title = item.title;
-                    return '<div>'+item.title+'<span id="'+title.toLowerCase()+'" hidden>'+item.id+'</div>';
-                }
-            }
-        });
-        
-        /* STYLING Twitter Typeahead */ 
-        $(".twitter-typeahead").addClass("form-control").css("padding",0);
-        $(".tt-hint,.tt-input").addClass("w-100");
-        $(".tt-hint").css("opacity",.6);
-
-        function getMovieId(){
-            let movieId = $(document.getElementById($("#movieSearch").val().toLowerCase())).text();
-            $("#importForm").attr("action", "/Movies/Import/"+movieId);
-        }
-    </script>
-
-}
+<!-- site.js includes typeahead functionality -->

@@ -1,6 +1,7 @@
 :root {
     --bswarning: #ffc107;
     --bsdark: #212529;
+    --bsdarktransparent: rgb(33,37,41,.9);
     --bslight: #f8f9fa;
     --light: #e8e8e8; /*e8, e7, c7, 777*/
     --dark: #181818;
@@ -16,10 +17,35 @@ body > .container {
     min-height: 85vh;
 }
 
+header {
+    min-height: 120px;
+    padding: 5% 0;
+}
+
 header, footer {
     background-color: var(--dark);
     color: var(--light);
     z-index: 4;
+}
+
+.navbar-nav {
+    border-top: 1px solid var(--bswarning);
+    border-bottom: 1px solid var(--bswarning);
+}
+
+.navbar-nav, #searchForm {
+    background-color: var(--bsdarktransparent);
+}
+
+#searchForm {
+    margin: 0 auto;
+}
+#movieSearch {
+    width: 75%;
+}
+#searchForm > * {
+    padding: 0 10px;
+    justify-content: center;
 }
 
 small {
@@ -109,7 +135,7 @@ small {
     position: absolute;
     color: var(--light);
     background-color: rgb(255,255,255,.3);
-    top: 12%;
+    top: 15%;
     z-index: 3;
 }
 .ctrl-prev {
@@ -133,6 +159,18 @@ small {
 }
 .card.clean > img {
     object-fit: cover;
+}
+
+.card-body {
+    padding: 5px; 
+}
+.card-body > h5 {
+    margin-bottom: 0;
+}
+
+.card-body > h5 > * {
+    display: inline-block;
+    vertical-align: top;
 }
 
 /* dot indicator size */
@@ -275,10 +313,10 @@ div.text-end > div > span {
 .dropdown-item {
     color: var(--light);
 }
-    .dropdown-item:hover {
-        background-color: inherit;
-        color: var(--light);
-    }
+.dropdown-item:hover {
+    background-color: inherit;
+    color: var(--light);
+}
 
 /* TWITTER TYPEAHEAD / BLOODHOUND */
 .tt-dataset-titles {
@@ -292,9 +330,9 @@ div.text-end > div > span {
     border-radius: 15px;
 }
 
-    .tt-dataset-titles > div:hover {
-        background-color: var(--bswarning); /* alt color #ffc107 */
-    }
+.tt-dataset-titles > div:hover {
+    background-color: var(--bswarning); /* alt color #ffc107 */
+}
 
 
 /* GOOGLE MATERIAL ICONS: based on guidelines */

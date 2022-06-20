@@ -17,7 +17,7 @@
                                     
 }
 
-<div class="row">
+<div class="row mt-3">
     <div class="col-12">
         <h4 class="mb-3">CUSTOM COLLECTIONS</h4>
         <div class="row mb-4">
@@ -45,7 +45,7 @@
                                 <div class="carousel-track d-flex flex-nowrap">
                                     @foreach(var movie in collection.MovieCollections)
                                     {
-                                        // cutoff length for overview is 175
+                                        // cutoff length for overview is 175 characters
                                         int overviewLength = movie.Movie.Overview.Length;
                                         int cap = (overviewLength < 175) ? overviewLength : 175;
                                         string overview = movie.Movie.Overview.Substring(0,cap);
@@ -65,7 +65,7 @@
                                                         @movie.Movie.Title
                                                     </h5>
                                                     <h5>
-                                                        <span class="material-symbols-outlined text-warning">star</span><large>@movie.Movie.VoteAverage</large><small>/10</small> 
+                                                        <span class="material-symbols-outlined text-warning">star</span><large>@movie.Movie.VoteAverage</large> <small>/ 10</small> 
                                                     </h5>
                                                     @*<p class="card-text clampOverview">@movie.Movie.Overview</p>*@
                                                     @*<a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.Movie.MovieId" class="">More Info</a>*@
@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12">
+    <div class="col-12 mt-2">
         <h4 class="mb-3">TMDB COLLECTIONS</h4>
         <div class="row mb-4">
             <div class="col-12">
@@ -136,7 +136,7 @@
                                                 <div class="card-body">
                                                     <h5 class="card-title clampTitle">@movie.title</h5>
                                                     <h5>
-                                                        <span class="material-symbols-outlined text-warning">star</span><large>@movie.vote_average</large><small>/10</small> 
+                                                        <span class="material-symbols-outlined text-warning">star</span><large>@movie.vote_average</large> <small>/ 10</small> 
                                                     </h5>
                                                     @*<p class="card-text clampOverview">@movie.overview</p>*@
                                                 </div>

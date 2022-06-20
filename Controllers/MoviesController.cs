@@ -38,7 +38,7 @@ namespace MovieProDemo.Controllers
             var movies = await _context.Movie.OrderByDescending(m => m.Id)
                                              .ToListAsync();
             ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
-
+            ViewData["Title"] = "Import";
             return View(movies);
         }
 
@@ -47,6 +47,7 @@ namespace MovieProDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Import(int id)
         {
+            TempData["errMsg"] = null;
             // If we already have this movie we can just warn the user instead of importing it again.
             if (_context.Movie.Any(m => m.MovieId == id))
             {
@@ -59,6 +60,14 @@ namespace MovieProDemo.Controllers
 
             // Run data through mapping procedure
             var movie = await _tmdbMappingService.MapMovieDetailAsync(movieDetail);
+            
+            // If API returns data that doesn't map correctly
+            if (movie == null)
+            {
+                //string errMsg = "Something is not right, unable to import movie";
+                TempData["errMsg"] = "Something is not right, unable to import movie";
+                return RedirectToAction("Import");
+            }
 
             // Add the new movie
             _context.Add(movie);
@@ -73,7 +82,8 @@ namespace MovieProDemo.Controllers
         public async Task<IActionResult> Library()
         {
             var movies = await _context.Movie.ToListAsync();
-            ViewData["Title"] = "Imported Movies";
+            ViewData["Title"] = "Movies Imported";
+            ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
 
             return View(movies);
         }
@@ -112,6 +122,8 @@ namespace MovieProDemo.Controllers
                 return NotFound();
             }
             ViewData["Local"] = local;
+            ViewData["Title"] = movie.Title;
+            ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
 
             return View(movie);
         }
