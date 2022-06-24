@@ -19,6 +19,7 @@ namespace MovieProDemo.Controllers
         {
             var actor = await _tmdbMovieService.ActorDetailAsync(id);
             actor = _mappingService.MapActorDetail(actor);
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
 
             return View(actor);
         }

@@ -7,12 +7,11 @@
 
 @{
     var errorMessage = TempData["errMsg"];
-    Console.WriteLine("Message is: "+errorMessage);
 }
 
 <div class="row">
     <div class="col-8 text-center mx-auto">
-        <h2 class="mb-5">DISCOVER &amp; IMPORT MOVIES</h2>
+        <h2 class="mb-5 fredoka">DISCOVER &amp; IMPORT MOVIES</h2>
         <h6>Bloodhound's typeahead feature combined with the TMDB API allows us to both discover and import movies!</h6>
         @if( errorMessage != null )
         {
@@ -30,15 +29,15 @@
     @foreach (var movie in Model)
     {
         <div class="row mb-3">
-            <div class="col-2">
+            <div class="col-4 col-md-3">
                 <img src="@_imageService.DecodeImage(movie.Poster, movie.PosterType)" class="img-fluid" alt="Movie Poster">
             </div>
-            <div class="col-10">
+            <div class="col-8 col-md-9 col-lg-8 col-lg-offset-1">
                 <h6><a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieId" class="text-warning text-decoration-none">
                     @movie.Title <small class="text-muted fst-italic fw-bold">(@movie.ReleaseDate.ToString("yyyy"))</small>
                 </a></h6>
                 <p><span class="material-symbols-outlined orange600">star</span><span class="fw-bold">@movie.VoteAverage</span>/10</p>
-                <p>@movie.Overview</p>
+                <small>@movie.Overview</small>
                 <hr />
                 <div class="row">
                     <div class="col-4"><small>Run Time: @movie.RunTime</small></div>

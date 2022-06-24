@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +19,12 @@ namespace MovieProDemo.Controllers
         }
 
         // GET: Index
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index(int? id)
         {
             id ??= (await _context.Collection.FirstOrDefaultAsync(c => c.Name.ToUpper() == "ALL")).Id;
 
-            ViewBag.CollectionId = new SelectList(_context.Collection, "Id", "Name", id);
+            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Name", id);
 
             var allMovieIds = await _context.Movie.Select(m => m.Id).ToListAsync();
 
@@ -37,10 +39,11 @@ namespace MovieProDemo.Controllers
             var moviesInCollection = new List<Movie>();
             movieIdsInCollection.ForEach(movieId => moviesInCollection.Add(_context.Movie.Find(movieId)));
 
-            ViewBag.IdsInCollection = new MultiSelectList(moviesInCollection, "Id", "Title"); // Id is the primary key of Movie table
+            ViewData["IdsInCollection"] = new MultiSelectList(moviesInCollection, "Id", "Title"); // Id is the primary key of Movie table
 
             var moviesNotInCollection = await _context.Movie.AsNoTracking().Where(m => movieIdsNotInCollection.Contains(m.Id)).ToListAsync();
-            ViewBag.IdsNotInCollection = new MultiSelectList(moviesNotInCollection, "Id", "Title");
+            ViewData["IdsNotInCollection"] = new MultiSelectList(moviesNotInCollection, "Id", "Title");
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
 
             return View();
         }

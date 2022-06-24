@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -21,10 +22,12 @@ namespace MovieProDemo.Controllers
         }
 
         // GET: Collections
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
             var defaultCollectionName = _appSettings.MovieProSettings.DefaultCollection.Name;
             var collections = await _context.Collection.Where(c => c.Name != defaultCollectionName).ToListAsync();
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
 
             return View(collections);
         }
@@ -42,6 +45,7 @@ namespace MovieProDemo.Controllers
         }
 
         // GET: Collections/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -54,6 +58,7 @@ namespace MovieProDemo.Controllers
             {
                 return NotFound();
             }
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
             return View(collection);
         }
 
@@ -98,6 +103,7 @@ namespace MovieProDemo.Controllers
         }
 
         // GET: Collections/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -116,7 +122,7 @@ namespace MovieProDemo.Controllers
             {
                 return RedirectToAction("Index", "Collections");
             }
-
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
             return View(collection);
         }
 

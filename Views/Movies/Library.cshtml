@@ -6,7 +6,7 @@
 @{ var count = 0; }
 <div class="row">
     <div class="col-12 text-center">
-        <h2>MOVIE LIBRARY</h2>
+        <h2 class="fredoka">MOVIE LIBRARY</h2>
     </div>
     <div class="col-12">
         <hr />
@@ -18,7 +18,7 @@
         {
             var trailerId = "trailer"+count;
             var idTarget = '#'+trailerId;
-            <div class="col-12 col-md-3 mb-3">
+            <div class="col-6 col-md-3 mb-3">
                 <div class="poster position-relative">
                     <img src="@_imageService.DecodeImage(movie.Poster, movie.PosterType)" class="img-fluid" alt="Movie Poster">
                     <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-rounded bg-warning text-dark position-absolute top-50 start-50 translate-middle">DETAILS</a>

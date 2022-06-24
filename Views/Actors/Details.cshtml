@@ -1,32 +1,50 @@
 ﻿@using MovieProDemo.Models.TMDB
 @model ActorDetail
 
-<div class="d-flex">
-    <div class="flex-shrink-0">
-        <img src="@Model.profile_path" class="align-self-center me-3" alt="Actor Image">
+@{ 
+    string aClass = "btn btn-block btn-warning text-decoration-none mt-4 fc-light w-75";
+}
+
+<div class="row" style="max-width: 1200px">
+    <div class="col-sm-12 col-md-6 col-lg-5 mb-2 text-center">
+        <img src="@Model.profile_path" class="w-100" alt="Actor Image" style="max-width: 400px" />
+        @if (TempData["movie_id"] != null)
+        {
+            <a asp-action="Details" asp-controller="Movies" asp-route-id='@TempData["movie_id"]' class="@aClass">Back to Movie Details</a>
+        }
+        else
+        {
+            <a asp-action="Index" asp-controller="Home" class="@aClass">HOME</a>
+        }
     </div>
-    <div class="flex-grow-1 ms-3">
+    <div class="col-sm-12 col-md-6 col-lg-7">
         <div class="row">
-            <table class="table table-hover">
-                <tbody>
-                    <tr>
-                        <td>Name:</td>
-                        <td>@Model.name</td>
-                    </tr>
-                    <tr>
-                        <td>Biography:</td>
-                        <td>@Model.biography</td>
-                    </tr>
-                    <tr>
-                        <td>Birthday:</td>
-                        <td>@Model.birthday</td>
-                    </tr>
-                    <tr>
-                        <td>Place of birth:</td>
-                        <td>@Model.place_of_birth</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="col-12 my-4">
+                <h3 class="movieTitle">@Model.name</h3>
+            </div>
+            <div class="col-12 mb-3">
+                <button class="bioSection active">BIOGRAPHY:</button>
+            </div>
+            <div class="col-12 col-md-9 mb-4">
+                <small class="bioText">@Model.biography</small>
+                <hr />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <div class="row">
+                    <div class="col-4 col-md-12 mb-4">
+                        <p class="fw-bold">Full Name:</p>
+                        <small class="d-block">@Model.name</small>
+                    </div>
+                    <div class="col-4 col-md-12 mb-4">
+                        <p class="fw-bold">Birthday:</p>
+                        <small class="d-block">@Model.birthday</small>
+                    </div>
+                    <div class="col-4 col-md-12">
+                        <p class="fw-bold">Place of birth:</p>
+                        <small class="d-block">@Model.place_of_birth</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

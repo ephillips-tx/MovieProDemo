@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -33,12 +34,15 @@ namespace MovieProDemo.Controllers
         }
 
         // GET: Import
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Import()
         {
             var movies = await _context.Movie.OrderByDescending(m => m.Id)
                                              .ToListAsync();
             ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
             ViewData["Title"] = "Import";
+
             return View(movies);
         }
 
@@ -84,6 +88,7 @@ namespace MovieProDemo.Controllers
             var movies = await _context.Movie.ToListAsync();
             ViewData["Title"] = "Movies Imported";
             ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
 
             return View(movies);
         }
@@ -91,6 +96,9 @@ namespace MovieProDemo.Controllers
         // GET: Movies
         public async Task<IActionResult> Index()
         {
+            ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
+
             return View(await _context.Movie.ToListAsync());
         }
 
@@ -124,6 +132,8 @@ namespace MovieProDemo.Controllers
             ViewData["Local"] = local;
             ViewData["Title"] = movie.Title;
             ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
+            ViewData["Action"] = "Details";
+            ViewData["HeaderImage"] = _imageService.DecodeImage(movie.Backdrop, movie.BackdropType);
 
             return View(movie);
         }
@@ -132,6 +142,8 @@ namespace MovieProDemo.Controllers
         public IActionResult Create()
         {
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Name");
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
+
             return View();
         }
 

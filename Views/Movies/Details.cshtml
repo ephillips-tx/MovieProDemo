@@ -4,22 +4,21 @@
 @model Movie
 
 @{
+    TempData["movie_id"] = Model.MovieId;
     List<string> Writers = new List<string>();
     List<string> Stars = new List<string>();
 }
 
 <div class="row" style="max-width: 1200px">
     <div class="col-sm-12 col-md-5">
-        <div>
-            <img src="@_imageService.DecodeImage(Model.Poster, Model.PosterType)" class="w-100" alt="Movie Poster" style="max-width: 400px" />
-            <div class="flip-box p-3">
-                <div class="flip-box-inner">
-                    <div class="flip-box-front">
-                        <button class="btn btn-lg btn-danger fw-bold" data-bs-toggle="modal" data-bs-target="#trailer">WATCH TRAILER</button>
-                    </div>
-                    <div class="flip-box-back">
-                        <button class="btn btn-lg btn-danger fw-bold" data-bs-toggle="modal" data-bs-target="#trailer"><span class="material-symbols-outlined">play_arrow</span></button>
-                    </div>
+        <img src="@_imageService.DecodeImage(Model.Poster, Model.PosterType)" class="w-100 mx-auto" alt="Movie Poster" />
+        <div class="flip-box p-3">
+            <div class="flip-box-inner">
+                <div class="flip-box-front">
+                    <button class="btn btn-lg btn-danger fw-bold" data-bs-toggle="modal" data-bs-target="#trailer">WATCH TRAILER</button>
+                </div>
+                <div class="flip-box-back">
+                    <button class="btn btn-lg btn-danger fw-bold" data-bs-toggle="modal" data-bs-target="#trailer"><span class="material-symbols-outlined">play_arrow</span></button>
                 </div>
             </div>
         </div>

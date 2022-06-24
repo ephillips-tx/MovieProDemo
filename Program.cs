@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using MovieProDemo.Data;
 using MovieProDemo.Models.Settings;
@@ -13,7 +14,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddDefaultUI()
+    .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 

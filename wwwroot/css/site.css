@@ -19,13 +19,17 @@ body > .container {
 
 header {
     min-height: 120px;
-    padding: 5% 0;
+    padding: 20px 0;
 }
 
 header, footer {
     background-color: var(--dark);
     color: var(--light);
     z-index: 4;
+}
+
+.tallHeader {
+    min-height: 300px;
 }
 
 .navbar-nav {
@@ -37,10 +41,17 @@ header, footer {
     background-color: var(--bsdarktransparent);
 }
 
-#searchForm {
-    margin: 0 auto;
+.navbar-toggler {
+    z-index: 5;
+    position: absolute;
+    top: 10px;
+    right: 20px;
 }
-#movieSearch {
+
+#searchForm {
+    margin: 30px auto 10px auto;
+}
+#movieSearch, #searchForm {
     width: 75%;
 }
 #searchForm > * {
@@ -54,10 +65,27 @@ small {
 
 .nav-link {
     color: var(--light);
+    font-family: 'Fascinate';
+    font-size: 1.2rem;
 }
 .nav-link:hover {
     color: var(--light);
     opacity: .4;
+}
+.nav-item {
+    margin: 0 1rem 0 .25rem;
+}
+.fc-light {
+    color: var(--light);
+}
+
+/* navigation submenu */
+
+.dropdown-menu dropdown-submenu {
+    display: none;
+}
+.dropdown-menu > li:hover > .dropdown-submenu {
+    display: block;
 }
 
 .sticky-footer {
@@ -67,11 +95,15 @@ small {
     width: 100%;
 }
 
-.movieDetails > button, .collections > button {
+h4.mb-3, .fredoka {
+    font-family: 'Fredoka One';
+}
+
+.movieDetails > button, .collections > button, .bioSection {
     font-family: 'PT Sans Narrow', cursive;
-    font-size: 1.3rem;
+    font-size: 1rem;
     color: var(--light);
-    margin-right: 45px;
+    margin-right: 1.5rem;
     background-color: transparent;
     border-top: none;
     border-left: none;
@@ -112,13 +144,19 @@ small {
     background-color: var(--bsdark); /* bootstrap dark */
     border: thick solid var(--bswarning); /* bootstrap warning */
 }
-
+.btn {
+    border: 0px solid transparent;
+}
 .asterisk::before {
     content: '*'
 }
 
 .hide {
     display: none;
+}
+
+.bioText {
+    font-size: 75%;
 }
 
 .carousel {
@@ -138,13 +176,21 @@ small {
     top: 15%;
     z-index: 3;
 }
+.ctrl-prev, .ctrl-next {
+    padding: 0;
+    top: 0;
+    height: 83%;
+    border: 0px solid transparent;
+    transition: padding .4s;
+}
 .ctrl-prev {
     left: 0;
-    height: 50%;
 }
 .ctrl-next {
     right: 0;
-    height: 50%;
+}
+.ctrl-prev:hover, .ctrl-next:hover {
+    padding: 10px;
 }
 
 .carousel-control:hover {
@@ -261,7 +307,6 @@ div.text-end > div > span {
 /* FLIP BOX - "watch trailer" button animation */
 .flip-box {
     width: 100%;
-    max-width: 400px;
     height: 80px;
     background-color: transparent;
     border: 1px solid var(--bslight);
@@ -305,6 +350,10 @@ div.text-end > div > span {
     height: 205px;
 }
 
+option.fw-bold {
+    font-size: 70%;
+}
+
 /* DROPDOWN MENU & ITEMS */
 .dropdown-menu {
     background-color: var(--dark);
@@ -346,17 +395,41 @@ div.text-end > div > span {
 
 
 @media (min-width: 576px) {
-
+    .collections > button {
+        margin-right: 2.2rem;
+        font-size: 1.3rem;
+    }
 }
 
 @media (min-width: 768px) {
-
+    .nav-link {
+        font-size: 1.5rem;
+    }
+    .nav-item {
+        font-size: 100%;
+        margin: 0 2rem 0 1rem;
+    }
+    .collections > button {
+        margin-right: 3rem;
+    }
+    option.fw-bold {
+        font-size: 85%;
+    }
 }
 
 
 @media (min-width: 992px) {
+    .collections > button {
+        margin-right: 5rem;
+    }
     .modal-trailer {
         width: 560px;
         height: 315px;
+    }
+    option.fw-bold {
+        font-size: 100%;
+    }
+    small {
+        font-size: 95%;
     }
 }
