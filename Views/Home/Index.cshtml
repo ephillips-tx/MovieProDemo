@@ -66,7 +66,7 @@
                                                         @movie.Movie.Title
                                                     </h5>
                                                     <h5>
-                                                        <span class="material-symbols-outlined text-warning">star</span><large>@movie.Movie.VoteAverage</large> <small>/ 10</small> 
+                                                        <span class="material-symbols-outlined text-warning">star</span><large>@Math.Round(movie.Movie.VoteAverage, 1)</large> <small>/ 10</small> 
                                                     </h5>
                                                     @*<p class="card-text clampOverview">@movie.Movie.Overview</p>*@
                                                     @*<a asp-action="Details" asp-controller="Movies" asp-route-id="@movie.Movie.MovieId" class="">More Info</a>*@

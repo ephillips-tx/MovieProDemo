@@ -1,0 +1,14 @@
+﻿@using MovieProDemo.Models.Database
+
+@model Movie
+
+
+<div class="row">
+    <div class="col">
+        <form asp-action="Delete" asp-controller="Movies">
+            <label>Are you sure you want to delete?</label>
+            <input type="number" value="@Model.MovieId" hidden />
+            <buttpn type="submit">DELETE MOVIE</buttpn>
+        </form>
+    </div>
+</div>

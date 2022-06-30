@@ -14,7 +14,7 @@ body {
 }
 
 body > .container {
-    min-height: 85vh;
+    min-height: 70vh;
 }
 
 header {
@@ -97,6 +97,10 @@ small {
 
 h4.mb-3, .fredoka {
     font-family: 'Fredoka One';
+}
+
+.collections > button {
+    max-width: 25%;
 }
 
 .movieDetails > button, .collections > button, .bioSection {

@@ -49,6 +49,13 @@ namespace MovieProDemo.Controllers
             return View(data);
         }
 
+        public IActionResult Credits()
+        {
+            ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
+
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";

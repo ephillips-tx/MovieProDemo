@@ -258,10 +258,10 @@ namespace MovieProDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movie.FindAsync(id);
+            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.MovieId == id);
             _context.Movie.Remove(movie);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Library", "Movies");
+            return RedirectToAction("Import", "Movies");
         }
 
         private bool MovieExists(int id)

@@ -36,13 +36,21 @@
                 <h6><a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieId" class="text-warning text-decoration-none">
                     @movie.Title <small class="text-muted fst-italic fw-bold">(@movie.ReleaseDate.ToString("yyyy"))</small>
                 </a></h6>
-                <p><span class="material-symbols-outlined orange600">star</span><span class="fw-bold">@movie.VoteAverage</span>/10</p>
+                <p><span class="material-symbols-outlined orange600">star</span><span class="fw-bold">@Math.Round(movie.VoteAverage,1)</span>/10</p>
                 <small>@movie.Overview</small>
                 <hr />
                 <div class="row">
                     <div class="col-4"><small>Run Time: @movie.RunTime</small></div>
                     <div class="col-4"><small>MMPA: @movie.Rating</small></div> 
                     <div class="col-4"><small>Release: @movie.ReleaseDate.ToString("dddd, dd MMMM yyyy")</small></div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <form asp-action="Delete" asp-controller="Movies" class="text-center mt-3">
+                            <input type="hidden" name="id" value="@movie.MovieId" />
+                            <button type="submit" class="btn-danger mx-auto">DELETE MOVIE</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

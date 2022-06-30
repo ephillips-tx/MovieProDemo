@@ -13,6 +13,8 @@
     @*Google Material Icons*@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0" />
+    @*favicon*@
+    <lnik rel="favicon" typeof="image/png" href="~/favicon.png" />
 </head>
 @{
     var title = ViewData["Title"];
@@ -78,8 +80,9 @@
         @RenderBody()
     </div>
     <footer class="sticky-footer border-top text-muted py-3">
-        <div class="container fc-light">
-            &copy; 2022 - MovieProDemo
+        <div class="row container fc-light">
+            <div class="col-8 nav-link">&copy; 2022 - MovieProDemo</div>
+            <div class="col-4 text-end"><a asp-controller="Home" asp-action="Credits" class="nav-link">Credits</a></div>
         </div>
     </footer>
     <script>let apiKey = '@ViewData["api_key"]'; </script>
