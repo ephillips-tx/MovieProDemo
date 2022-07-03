@@ -9,6 +9,8 @@
 }
 
 body {
+    height: 100%;
+    width: 100%;
     background-color: var(--darknavy);
     color: var(--light);
 }
@@ -88,8 +90,13 @@ small {
     display: block;
 }
 
-.sticky-footer {
-    position: sticky;
+.modContain {
+    margin-bottom: 5.5rem;
+    padding-top: 2rem;
+}
+
+.fixed-footer {
+    position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;

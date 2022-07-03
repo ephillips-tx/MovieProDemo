@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0" />
     @*favicon*@
-    <lnik rel="favicon" typeof="image/png" href="~/favicon.png" />
+    <link rel="favicon" typeof="image/png" href="~/favicon.png" />
 </head>
 @{
     var title = ViewData["Title"];
@@ -76,16 +76,16 @@
             </form>
         }
     </header>
-    <div class="container pt-4">
+    <div class="container modContain">
         @RenderBody()
     </div>
-    <footer class="sticky-footer border-top text-muted py-3">
-        <div class="row container fc-light">
+    <footer class="fixed-footer border-top py-3 fc-light">
+        <div class="row">
             <div class="col-8 nav-link">&copy; 2022 - MovieProDemo</div>
             <div class="col-4 text-end"><a asp-controller="Home" asp-action="Credits" class="nav-link">Credits</a></div>
         </div>
     </footer>
-    <script>let apiKey = '@ViewData["api_key"]'; </script>
+    <script>let apiKey = '@ViewData["api_key"]' </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/typeahead.bundle.js"></script>

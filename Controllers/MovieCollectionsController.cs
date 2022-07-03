@@ -44,6 +44,7 @@ namespace MovieProDemo.Controllers
             var moviesNotInCollection = await _context.Movie.AsNoTracking().Where(m => movieIdsNotInCollection.Contains(m.Id)).ToListAsync();
             ViewData["IdsNotInCollection"] = new MultiSelectList(moviesNotInCollection, "Id", "Title");
             ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
+            ViewData["Title"] = "Manage Collections";
 
             return View();
         }

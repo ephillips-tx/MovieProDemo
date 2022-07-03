@@ -28,6 +28,7 @@ namespace MovieProDemo.Controllers
             var defaultCollectionName = _appSettings.MovieProSettings.DefaultCollection.Name;
             var collections = await _context.Collection.Where(c => c.Name != defaultCollectionName).ToListAsync();
             ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
+            ViewData["Title"] = "Edit Collections";
 
             return View(collections);
         }

@@ -43,6 +43,7 @@ namespace MovieProDemo.Controllers
                 Upcoming = await _tmdbMovieService.SearchMoviesAsync(Enums.MovieCategory.upcoming, count)
             };
             ViewBag.MovieCount = count;
+            ViewData["Title"] = "Home";
             ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
             ViewData["api_key"] = _appSettings.MovieProSettings.TmDbApiKey;
 
@@ -51,6 +52,7 @@ namespace MovieProDemo.Controllers
 
         public IActionResult Credits()
         {
+            ViewData["Title"] = "Credits";
             ViewData["HeaderImage"] = "/img/shannia-christanty-VLcR2YhFHN8-unsplash.jpg";
 
             return View();
